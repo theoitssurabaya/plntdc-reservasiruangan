@@ -64,7 +64,6 @@ tdcpln-reservasiruangan/
 │       ├── index.html             # Single Page Application (SPA) Portal Publik
 │       └── dashboard.html         # Single Page Application (SPA) Dashboard Admin
 │
-├── .env.example                   # Template Variabel Lingkungan
 ├── requirements.txt               # Daftar Dependensi Python
 ├── run.sh                         # Skrip Startup Linux / Ubuntu
 ├── run.bat                        # Skrip Startup Windows (Command Prompt)
@@ -118,15 +117,11 @@ chmod +x run.sh
    pip install -r requirements.txt
    ```
 
-4. **Siapkan environment variables:**
-   ```bash
-   cp .env.example .env
-   ```
-
-5. **Jalankan aplikasi:**
+4. **Jalankan aplikasi (zero-config lokal dengan database bawaan):**
    ```bash
    python main.py
    ```
+   *(Opsional: Jika membutuhkan kustomisasi port atau koneksi database PostgreSQL/MySQL eksternal, buat berkas `.env`)*
 
 6. **Akses sistem melalui browser:**
    * Portal Publik: [http://localhost:8080/](http://localhost:8080/)

@@ -21,7 +21,6 @@ venv.bak/
 .env
 .env.local
 .env.*.local
-!.env.example
 
 # Database Runtime, Temporary, & Lock Files
 *.db-wal
@@ -54,3 +53,4 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
