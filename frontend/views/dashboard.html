@@ -1,0 +1,3100 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>Dashboard Eksekutif & Persetujuan — Manajemen TDC</title>
+    <meta name="description" content="Dashboard Eksekutif & Persetujuan Reservasi Ruangan TDC PT PLN NPS">
+    <link rel="shortcut icon" href="/assets/images/pln_logo.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet">
+    <link href="/assets/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="/assets/css/vuetify.min.css" rel="stylesheet">
+    <link href="/assets/css/styles.css" rel="stylesheet">
+    <link href="/assets/css/quill.core.css" rel="stylesheet">
+    <link href="/assets/css/quill.snow.css" rel="stylesheet">
+    <link href="/assets/css/quill.bubble.css" rel="stylesheet">
+
+    <style>
+        [v-cloak] { display: none !important; }
+        
+        body {
+            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F4F6F9;
+        }
+
+        .dashboard-header-bg {
+            background: linear-gradient(135deg, #072440 0%, #005A9C 100%);
+            color: #FFFFFF;
+        }
+
+        /* Styling Tabel Persetujuan Proporsional & Legible */
+        .approval-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .approval-table thead tr {
+            background-color: #072440;
+            color: #FFFFFF;
+        }
+
+        .approval-table th {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #005A9C;
+        }
+
+        .approval-table td {
+            padding: 16px 18px;
+            vertical-align: top;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 14px;
+        }
+
+        .approval-table tbody tr:hover {
+            background-color: #F8FAFC;
+        }
+
+        .item-code-badge {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #005A9C;
+            letter-spacing: 0.3px;
+        }
+
+        .item-title-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: #072440;
+            line-height: 1.4;
+        }
+
+        .item-room-text {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #005A9C;
+            margin-top: 4px;
+        }
+
+        .item-date-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0F172A;
+        }
+
+        .item-time-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 4px;
+        }
+
+        .item-pic-name {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #072440;
+        }
+
+        .item-pic-meta {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 3px;
+        }
+
+        .kpi-card-hover {
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+            cursor: default;
+        }
+        .kpi-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(7, 36, 64, 0.12) !important;
+        }
+    
+        .v-navigation-drawer--mini-variant .v-list-item {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .v-navigation-drawer--mini-variant .v-list-item__avatar {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        .v-navigation-drawer--mini-variant .v-list-item__icon {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ========================= preloader start ========================= -->
+    <div class="preloader">
+        <div class="loader">
+            <div class="loader-logo">
+                <img src="/assets/images/1767688832_5122e646fbcc5a637f54.png" alt="Preloader" width="64" style="margin-top: 5px;">
+            </div>
+            <div class="spinner">
+                <div class="spinner-container">
+                    <div class="spinner-rotator">
+                        <div class="spinner-left">
+                            <div class="spinner-circle"></div>
+                        </div>
+                        <div class="spinner-right">
+                            <div class="spinner-circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- preloader end -->
+
+    <div id="app" v-cloak>
+        <v-app>
+            <!-- TOP APP BAR -->
+            <v-app-bar app color="#072440" dark elevation="2">
+                <v-app-bar-nav-icon @click.stop="toggleSidebar"></v-app-bar-nav-icon>
+                <div class="d-flex align-center mr-2 ml-1">
+                    <img src="/assets/images/pln_logo.png" alt="Logo PLN" height="32" class="mr-2" style="vertical-align: middle; object-fit: contain;" />
+                    <span style="display:inline-block; width:1px; height:20px; background:rgba(255,255,255,0.3); margin:0 6px;"></span>
+                    <img src="/assets/images/tdc_logo.png" alt="Logo TDC" height="26" class="mr-2" style="vertical-align: middle; object-fit: contain;" />
+                </div>
+                <v-toolbar-title class="font-weight-bold subtitle-1 d-none d-sm-flex">
+                    Manajemen TDC &mdash; PT PLN NPS
+                </v-toolbar-title>
+
+                <v-spacer></v-spacer>
+
+                <!-- LIVE CLOCK -->
+                <div class="d-none d-md-flex align-center mr-3" style="background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 6px; font-size: 13px;">
+                    <v-icon x-small color="#FFD200" class="mr-1">mdi-clock-outline</v-icon>
+                    <span>{{ currentLiveTime || 'WIB' }}</span>
+                </div>
+
+                <!-- STATUS SINKRONISASI SERVER (KLIK UNTUK REFRESH) -->
+                <div
+                    class="server-sync-status d-none d-sm-flex align-center mr-3 px-2 py-1 rounded"
+                    @click="manualRefresh"
+                    :title="isRefreshing ? 'Sedang menyinkronkan data...' : 'Tersambung real-time ke server. Klik untuk menyegarkan data.'"
+                    style="cursor: pointer; user-select: none; transition: background-color 0.2s;"
+                >
+                    <span :style="{ color: isRefreshing ? '#F59E0B' : (isLiveConnected ? '#10B981' : '#94A3B8'), fontSize: '13px', lineHeight: '1', marginRight: '6px' }">●</span>
+                    <span style="color: #E2E8F0; font-size: 13px; font-weight: 500;">{{ isRefreshing ? 'Menyinkronkan...' : syncStatusText }}</span>
+                </div>
+
+                <!-- NOTIFICATION BADGE (PENDING APPROVALS) -->
+                <v-btn icon class="mr-2" @click="setView('approvals')" title="Persetujuan Reservasi Menunggu">
+                    <v-badge :content="countPending" :value="countPending" color="red darken-1" overlap>
+                        <v-icon>mdi-bell</v-icon>
+                    </v-badge>
+                </v-btn>
+
+                <!-- USER MENU DROPDOWN -->
+                <v-menu offset-y transition="slide-y-transition">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn text class="font-weight-bold text-capitalize px-2" v-bind="attrs" v-on="on">
+                            <v-avatar size="32" color="#005A9C" class="mr-2">
+                                <v-icon small color="white">mdi-account-tie</v-icon>
+                            </v-avatar>
+                            <span class="d-none d-sm-inline">{{ (currentUser && currentUser.fullname) || 'Administrator' }}</span>
+                            <v-icon right small>mdi-chevron-down</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-list dense width="260">
+                        <v-list-item class="py-2">
+                            <v-list-item-avatar size="44" color="#005A9C">
+                                <v-icon color="#FFD200">mdi-shield-crown</v-icon>
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                                <v-list-item-title class="font-weight-bold subtitle-2" style="color: #072440;">{{ (currentUser && (currentUser.fullname || currentUser.username)) || 'Administrator' }}</v-list-item-title>
+                                <v-list-item-subtitle class="caption font-weight-bold" style="color: #005A9C;">NID: {{ (currentUser && (currentUser.nid || currentUser.username)) || 'admin' }}</v-list-item-subtitle>
+                                <div class="mt-1">
+                                    <v-chip color="primary" x-small class="font-weight-bold">Administrator</v-chip>
+                                </div>
+                            </v-list-item-content>
+                        </v-list-item>
+
+                        <v-divider class="my-1"></v-divider>
+
+                        <!-- 1. Halaman Publik -->
+                        <v-list-item link @click="goToPublicPortal()">
+                            <v-list-item-icon class="mr-3">
+                                <v-icon color="#005A9C">mdi-web</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title class="font-weight-medium">Halaman Publik</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+
+                        <!-- 2. Pengaturan (Di dalamnya ada Ganti Kata Sandi) -->
+                        <v-list-item link @click="setView('settings')">
+                            <v-list-item-icon class="mr-3">
+                                <v-icon color="#005A9C">mdi-cog</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title class="font-weight-medium">Pengaturan</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+
+                        <v-divider class="my-1"></v-divider>
+
+                        <!-- 3. Logout -->
+                        <v-list-item link @click="doLogout()">
+                            <v-list-item-icon class="mr-3">
+                                <v-icon color="red darken-2">mdi-logout</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title class="red--text text--darken-2 font-weight-bold">Logout</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </v-app-bar>
+
+            <!-- LEFT SIDEBAR NAVIGATION DRAWER -->
+            <v-navigation-drawer v-model="sidebarMenu" app :mini-variant="toggleMini" :color="$vuetify.theme.dark ? '' : '#072440'" dark width="270">
+                <v-list dense nav class="py-0">
+                    <div class="d-flex align-center justify-center" style="height: 64px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                        <v-list-item :class="toggleMini ? 'px-0 justify-center ma-0 fill-height' : 'px-3 fill-height'">
+                            <v-list-item-avatar :size="toggleMini ? 36 : 40" color="#005A9C" :class="toggleMini ? 'ma-0 mx-auto' : 'mr-3'" style="box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                                <v-icon :small="toggleMini" color="#FFD200">mdi-shield-crown</v-icon>
+                            </v-list-item-avatar>
+                            <v-list-item-content v-if="!toggleMini">
+                                <v-list-item-title class="font-weight-bold subtitle-2 white--text">
+                                    {{ (currentUser && currentUser.fullname) || 'Admin Console' }}
+                                </v-list-item-title>
+                                <v-list-item-subtitle class="caption amber--text text--lighten-2 font-weight-medium">
+                                    Divisi TDC &bull; PT PLN NPS
+                                </v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </div>
+
+                    <!-- SECTION 1: DASHBOARD & PERSETUJUAN -->
+                    <v-subheader class="caption font-weight-bold text-uppercase grey--text text--lighten-1" v-if="!toggleMini">
+                        Menu Utama
+                    </v-subheader>
+
+                    <v-list-item link @click="setView('overview')" :class="currentView === 'overview' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-icon color="#38BDF8">mdi-view-dashboard</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title class="font-weight-medium">Dashboard Analitik</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item link @click="setView('approvals')" :class="currentView === 'approvals' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-badge v-if="countPending > 0" color="red darken-1" :content="countPending" overlap>
+                                <v-icon color="#F59E0B">mdi-clipboard-check-outline</v-icon>
+                            </v-badge>
+                            <v-icon v-else color="#F59E0B">mdi-clipboard-check-outline</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title class="font-weight-bold amber--text text--lighten-2">
+                                Persetujuan Reservasi
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item link @click="setView('agenda')" :class="currentView === 'agenda' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-icon color="#4ADE80">mdi-calendar-month</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Manajemen Agenda</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <!-- SECTION 2: MASTER FASILITAS -->
+                    <v-subheader class="caption font-weight-bold text-uppercase grey--text text--lighten-1 mt-2" v-if="!toggleMini">
+                        Master Data
+                    </v-subheader>
+
+                    <v-list-item link @click="setView('rooms')" :class="currentView === 'rooms' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-icon color="#E2E8F0">mdi-office-building</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Katalog Ruangan</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item link @click="setView('slideshow')" :class="currentView === 'slideshow' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-icon color="#E2E8F0">mdi-image-multiple</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Slideshow Beranda</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item link @click="setView('pages')" :class="currentView === 'pages' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-icon color="#E2E8F0">mdi-file-document-outline</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Halaman Web (Pages)</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <!-- SECTION 3: PENGGUNA & SISTEM -->
+                    <v-subheader class="caption font-weight-bold text-uppercase grey--text text--lighten-1 mt-2" v-if="!toggleMini">
+                        Administrasi
+                    </v-subheader>
+
+                    <v-list-item link @click="setView('users')" :class="currentView === 'users' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-icon color="#E2E8F0">mdi-account-multiple</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Kelola Pengguna</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item link @click="setView('settings')" :class="currentView === 'settings' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-icon color="#E2E8F0">mdi-cog</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Pengaturan Sistem</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-list-item link @click="setView('backup')" :class="currentView === 'backup' ? 'v-item--active v-list-item--active' : ''">
+                        <v-list-item-icon>
+                            <v-icon color="#E2E8F0">mdi-database</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Backup Database</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+
+                <template v-slot:append>
+                    <v-divider></v-divider>
+                    <div class="pa-3 text-center caption grey--text" v-if="!toggleMini">
+                        &copy; {{ new Date().getFullYear() }} TDC PT PLN NPS
+                    </div>
+                </template>
+            </v-navigation-drawer>
+
+            <!-- MAIN CONTENT AREA -->
+            <v-main style="background-color: #F4F6F9; min-height: 100vh;">
+                <v-container class="pa-6" fluid>
+                    <!-- DYNAMIC HEADER BERDASARKAN MENU TERPILIH -->
+                    <div class="d-flex align-center justify-space-between mb-6 flex-wrap">
+                        <div>
+                            <div class="d-flex align-center">
+                                <v-icon color="#005A9C" class="mr-2" large>{{ currentViewMeta.icon }}</v-icon>
+                                <h1 class="text-h4 font-weight-bold" style="color: #072440;">
+                                    {{ currentViewMeta.title }}
+                                </h1>
+                            </div>
+                            <p class="subtitle-1 grey--text text--darken-1 mb-0 mt-1">
+                                {{ currentViewMeta.subtitle }}
+                            </p>
+                        </div>
+                        <div class="mt-3 mt-sm-0 d-flex flex-wrap align-center">
+                            <v-btn v-if="currentView === 'rooms'" color="#005A9C" dark class="font-weight-bold mr-2" @click="openRoomDialog()">
+                                <v-icon left small>mdi-plus</v-icon> Tambah Ruangan
+                            </v-btn>
+                            <v-btn v-if="currentView === 'agenda'" color="#005A9C" dark class="font-weight-bold mr-2" @click="openAgendaDialog()">
+                                <v-icon left small>mdi-calendar-plus</v-icon> Tambah Agenda
+                            </v-btn>
+                            <v-btn v-if="currentView === 'agenda'" color="green darken-2" dark class="font-weight-bold mr-2" @click="exportExcelReport()">
+                                <v-icon left small>mdi-file-excel</v-icon> Export Excel
+                            </v-btn>
+                            <v-btn v-if="currentView === 'slideshow'" color="#005A9C" dark class="font-weight-bold mr-2" @click="openSlideDialog()">
+                                <v-icon left small>mdi-image-plus</v-icon> Unggah Slide Baru
+                            </v-btn>
+                            <v-btn v-if="currentView === 'users'" color="#005A9C" dark class="font-weight-bold mr-2" @click="openUserDialog()">
+                                <v-icon left small>mdi-account-plus</v-icon> Tambah Pengguna
+                            </v-btn>
+                            <v-btn v-if="currentView === 'backup'" color="#005A9C" dark class="font-weight-bold mr-2" @click="createBackupNow()" :loading="backingUp">
+                                <v-icon left small>mdi-database-plus</v-icon> Buat Backup Baru
+                            </v-btn>
+                            <v-btn color="#005A9C" outlined class="font-weight-bold" @click="refreshAllData" :loading="loading || approvalLoading">
+                                <v-icon left small>mdi-refresh</v-icon> Segarkan Data
+                            </v-btn>
+                        </div>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 1: OVERVIEW & ANALYTICS                             -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'overview'">
+                        <!-- BARIS 1: 6 KARTU KPI METRIK UTAMA -->
+                        <v-row class="mb-6">
+                            <!-- Total Ruangan -->
+                            <v-col cols="12" sm="6" md="2">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-top: 4px solid #072440;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <span class="caption grey--text text--darken-1 font-weight-bold">TOTAL RUANGAN</span>
+                                        <v-icon color="#072440">mdi-office-building</v-icon>
+                                    </div>
+                                    <div class="text-h4 font-weight-bold mt-2" style="color: #072440;">{{ totalRuangan || 12 }}</div>
+                                    <div class="caption grey--text mt-1">Fasilitas aktif TDC</div>
+                                </v-card>
+                            </v-col>
+
+                            <!-- Menunggu Approval -->
+                            <v-col cols="12" sm="6" md="2">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-top: 4px solid #D97706;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <span class="caption orange--text text--darken-4 font-weight-bold">PENDING APPROVAL</span>
+                                        <v-icon color="#D97706">mdi-bell-ring</v-icon>
+                                    </div>
+                                    <div class="text-h4 font-weight-bold mt-2" style="color: #D97706;">{{ formatNumber(countPending) }}</div>
+                                    <div class="caption orange--text text--darken-3 font-weight-medium mt-1">Menunggu verifikasi</div>
+                                </v-card>
+                            </v-col>
+
+                            <!-- Disetujui -->
+                            <v-col cols="12" sm="6" md="2">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-top: 4px solid #0D7A52;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <span class="caption green--text text--darken-3 font-weight-bold">DISETUJUI</span>
+                                        <v-icon color="#0D7A52">mdi-check-decagram</v-icon>
+                                    </div>
+                                    <div class="text-h4 font-weight-bold mt-2" style="color: #0D7A52;">{{ formatNumber(countApproved) }}</div>
+                                    <div class="caption green--text text--darken-2 font-weight-medium mt-1">Jadwal terkonfirmasi</div>
+                                </v-card>
+                            </v-col>
+
+                            <!-- Ditolak -->
+                            <v-col cols="12" sm="6" md="2">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-top: 4px solid #C81E1E;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <span class="caption red--text text--darken-3 font-weight-bold">DITOLAK</span>
+                                        <v-icon color="#C81E1E">mdi-close-circle-outline</v-icon>
+                                    </div>
+                                    <div class="text-h4 font-weight-bold mt-2" style="color: #C81E1E;">{{ formatNumber(countRejected) }}</div>
+                                    <div class="caption grey--text mt-1">Dibatalkan / ditolak</div>
+                                </v-card>
+                            </v-col>
+
+                            <!-- Hari Paling Padat -->
+                            <v-col cols="12" sm="6" md="2">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-top: 4px solid #6366F1;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <span class="caption indigo--text text--darken-2 font-weight-bold">HARI TERSIBUK</span>
+                                        <v-icon color="#6366F1">mdi-calendar-star</v-icon>
+                                    </div>
+                                    <div class="text-h5 font-weight-bold mt-2" style="color: #072440;">{{ (analytics.insights && analytics.insights.busiest_day) || 'Senin' }}</div>
+                                    <div class="caption grey--text mt-1">Intensitas tertinggi</div>
+                                </v-card>
+                            </v-col>
+
+                            <!-- Jam Puncak -->
+                            <v-col cols="12" sm="6" md="2">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-top: 4px solid #B45309;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <span class="caption orange--text text--darken-4 font-weight-bold">JAM PUNCAK</span>
+                                        <v-icon color="#B45309">mdi-clock-alert</v-icon>
+                                    </div>
+                                    <div class="text-h6 font-weight-bold mt-2" style="color: #072440;">{{ (analytics.insights && analytics.insights.peak_hour) || '10:00 - 11:00' }}</div>
+                                    <div class="caption grey--text mt-1">Slot okupansi terpadat</div>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+
+                        <!-- BARIS 2: GRAFIK DISTRIBUSI JAM & KOMPOSISI STATUS -->
+                        <v-row class="mb-6">
+                            <v-col cols="12" md="8">
+                                <v-card class="pa-5 rounded-lg elevation-1 fill-height">
+                                    <div class="d-flex align-center justify-space-between mb-3">
+                                        <div>
+                                            <h3 class="font-weight-bold" style="color: #072440; font-size: 1.15rem;">
+                                                <v-icon color="#005A9C" class="mr-1">mdi-chart-bar</v-icon> Distribusi Jam Mulai Reservasi (24 Jam)
+                                            </h3>
+                                            <div class="caption grey--text text--darken-1">Pola waktu dimulainya kegiatan pelatihan & rapat di seluruh ruangan TDC</div>
+                                        </div>
+                                    </div>
+                                    <bar-chart1 :chart-harian="chartHarian"></bar-chart1>
+                                </v-card>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-card class="pa-5 rounded-lg elevation-1 fill-height">
+                                    <div class="d-flex align-center justify-space-between mb-3">
+                                        <div>
+                                            <h3 class="font-weight-bold" style="color: #072440; font-size: 1.15rem;">
+                                                <v-icon color="#005A9C" class="mr-1">mdi-chart-pie</v-icon> Komposisi Status Reservasi
+                                            </h3>
+                                            <div class="caption grey--text text--darken-1">Perbandingan pengajuan Baru vs Disetujui vs Ditolak</div>
+                                        </div>
+                                    </div>
+                                    <bar-chart :chart-jenis="chartJenis" :chart-jumlah="chartJumlah"></bar-chart>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+
+                        <!-- BARIS 3: HEATMAP KEPADATAN & PERINGKAT UTILISASI RUANGAN -->
+                        <v-row class="mb-4">
+                            <!-- Heatmap -->
+                            <v-col cols="12" lg="7">
+                                <v-card class="pa-5 rounded-lg elevation-1 fill-height">
+                                    <div class="d-flex align-center justify-space-between mb-2">
+                                        <h3 class="font-weight-bold" style="color: #072440; font-size: 1.15rem;">
+                                            <v-icon color="#005A9C" class="mr-1">mdi-chart-heatmap</v-icon> Heatmap Kepadatan Jam Reservasi (Senin - Jumat)
+                                        </h3>
+                                        <v-chip small color="#005A9C" outlined class="font-weight-bold">07:00 - 17:00 WIB</v-chip>
+                                    </div>
+                                    <div class="caption grey--text text--darken-1 mb-4">
+                                        Tingkat okupansi waktu ruangan aktif per hari dan per jam. Sorot kursor pada sel untuk melihat detail total aktivitas.
+                                    </div>
+
+                                    <div style="overflow-x: auto;">
+                                        <table style="width: 100%; border-collapse: separate; border-spacing: 5px; text-align: center; font-size: 12px;" v-if="analytics.heatmap && analytics.heatmap.matrix">
+                                            <thead>
+                                                <tr>
+                                                    <th style="padding: 8px; color: #072440; font-weight: 700; background:#EDF2F7; border-radius:4px;">Hari</th>
+                                                    <th v-for="h in analytics.heatmap.hours" :key="h" style="padding: 8px 4px; font-weight: 600; color: #4A5568;">
+                                                        {{ h.substring(0,2) }}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(dayName, dIdx) in analytics.heatmap.days" :key="dayName">
+                                                    <td style="padding: 12px 10px; font-weight: 700; color: #072440; text-align: left; background: #EDF2F7; border-radius: 4px;">
+                                                        {{ dayName }}
+                                                    </td>
+                                                    <td v-for="(countVal, hIdx) in analytics.heatmap.matrix[dIdx]" :key="hIdx"
+                                                        :style="{
+                                                            padding: '12px 2px',
+                                                            backgroundColor: getHeatmapColor(countVal, analytics.heatmap.max_value),
+                                                            color: getHeatmapTextColor(countVal, analytics.heatmap.max_value),
+                                                            borderRadius: '6px',
+                                                            fontWeight: countVal > 0 ? '700' : '400',
+                                                            cursor: 'pointer',
+                                                            transition: 'all 0.15s ease'
+                                                        }"
+                                                        :title="dayName + ' pk ' + analytics.heatmap.hours[hIdx] + ': ' + countVal + ' aktivitas'"
+                                                    >
+                                                        {{ countVal > 0 ? countVal : '-' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Legend Heatmap -->
+                                    <div class="d-flex align-center justify-end mt-4 caption grey--text text--darken-2 flex-wrap">
+                                        <span class="mr-2 font-weight-bold">Intensitas:</span>
+                                        <span class="mr-3"><span style="display:inline-block; width:12px; height:12px; background:#FFFFFF; border:1px solid #CBD5E0; border-radius:3px; vertical-align:middle;"></span> Kosong</span>
+                                        <span class="mr-3"><span style="display:inline-block; width:12px; height:12px; background:#81D4FA; border-radius:3px; vertical-align:middle;"></span> Rendah</span>
+                                        <span class="mr-3"><span style="display:inline-block; width:12px; height:12px; background:#00A2E8; border-radius:3px; vertical-align:middle;"></span> Sedang</span>
+                                        <span class="mr-3"><span style="display:inline-block; width:12px; height:12px; background:#005A9C; border-radius:3px; vertical-align:middle;"></span> Tinggi</span>
+                                        <span><span style="display:inline-block; width:12px; height:12px; background:#E53935; border-radius:3px; vertical-align:middle;"></span> Sangat Padat</span>
+                                    </div>
+                                </v-card>
+                            </v-col>
+
+                            <!-- Peringkat Utilisasi Ruangan TDC -->
+                            <v-col cols="12" lg="5">
+                                <v-card class="pa-5 rounded-lg elevation-1 fill-height">
+                                    <div class="d-flex align-center justify-space-between mb-2">
+                                        <h3 class="font-weight-bold" style="color: #072440; font-size: 1.15rem;">
+                                            <v-icon color="#005A9C" class="mr-1">mdi-poll</v-icon> Utilisasi Ruangan TDC
+                                        </h3>
+                                        <span class="caption grey--text font-weight-bold">{{ (analytics.insights && analytics.insights.avg_duration) || '7.4 Jam / Sesi' }}</span>
+                                    </div>
+                                    <div class="caption grey--text text--darken-1 mb-4">
+                                        Persentase beban penggunaan ruangan berdasarkan total frekuensi booking dan akumulasi jam pakai.
+                                    </div>
+
+                                    <div style="max-height: 420px; overflow-y: auto; padding-right: 6px;">
+                                        <div v-for="(rm, idx) in analytics.rooms_utilization" :key="rm.room_id" class="mb-3 pa-2 rounded" style="background: #F8FAFC; border: 1px solid #EDF2F7;">
+                                            <div class="d-flex justify-space-between align-center mb-1">
+                                                <div class="d-flex align-center text-truncate" style="max-width: 260px;">
+                                                    <span class="font-weight-bold mr-2 caption" style="color: #005A9C;">#{{ idx + 1 }}</span>
+                                                    <span class="font-weight-bold caption" style="color: #072440;">{{ rm.room_nama }}</span>
+                                                    <v-chip x-small class="ml-2 grey lighten-2 font-weight-medium">{{ rm.room_kapasitas }} org</v-chip>
+                                                </div>
+                                                <span class="caption grey--text text--darken-2 font-weight-bold ml-1">
+                                                    {{ rm.booking_count }}x ({{ rm.total_hours }} jam)
+                                                </span>
+                                            </div>
+                                            <v-progress-linear
+                                                :value="rm.occupancy_rate"
+                                                height="7"
+                                                rounded
+                                                :color="rm.occupancy_rate > 75 ? '#005A9C' : (rm.occupancy_rate > 40 ? '#00A2E8' : '#64748B')"
+                                            ></v-progress-linear>
+                                        </div>
+                                    </div>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 2: PERSETUJUAN RESERVASI RUANGAN (APPROVALS)       -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'approvals'">
+                        <!-- 4 KARTU RINGKASAN STATUS APPROVAL -->
+                        <v-row class="mb-6">
+                            <v-col cols="12" sm="6" md="3">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-left: 5px solid #D97706; background: #FFFFFF;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <div>
+                                            <div class="caption font-weight-bold grey--text text-uppercase">Menunggu Verifikasi</div>
+                                            <div class="text-h4 font-weight-bold mt-1" style="color: #D97706;">{{ approvalCounts.pending }}</div>
+                                            <div class="caption font-weight-medium orange--text text--darken-2 mt-1">Perlu tindakan persetujuan</div>
+                                        </div>
+                                        <v-avatar color="#FFFBEB" size="48">
+                                            <v-icon color="#D97706" size="28">mdi-clock-alert-outline</v-icon>
+                                        </v-avatar>
+                                    </div>
+                                </v-card>
+                            </v-col>
+
+                            <v-col cols="12" sm="6" md="3">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-left: 5px solid #16A34A; background: #FFFFFF;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <div>
+                                            <div class="caption font-weight-bold grey--text text-uppercase">Telah Disetujui</div>
+                                            <div class="text-h4 font-weight-bold mt-1" style="color: #16A34A;">{{ approvalCounts.approved }}</div>
+                                            <div class="caption font-weight-medium green--text text--darken-2 mt-1">Jadwal resmi terkonfirmasi</div>
+                                        </div>
+                                        <v-avatar color="#F0FDF4" size="48">
+                                            <v-icon color="#16A34A" size="28">mdi-check-decagram-outline</v-icon>
+                                        </v-avatar>
+                                    </div>
+                                </v-card>
+                            </v-col>
+
+                            <v-col cols="12" sm="6" md="3">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-left: 5px solid #DC2626; background: #FFFFFF;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <div>
+                                            <div class="caption font-weight-bold grey--text text-uppercase">Ditolak / Batal</div>
+                                            <div class="text-h4 font-weight-bold mt-1" style="color: #DC2626;">{{ approvalCounts.rejected }}</div>
+                                            <div class="caption font-weight-medium red--text text--darken-2 mt-1">Permohonan dibatalkan</div>
+                                        </div>
+                                        <v-avatar color="#FEF2F2" size="48">
+                                            <v-icon color="#DC2626" size="28">mdi-close-circle-outline</v-icon>
+                                        </v-avatar>
+                                    </div>
+                                </v-card>
+                            </v-col>
+
+                            <v-col cols="12" sm="6" md="3">
+                                <v-card class="pa-4 rounded-lg elevation-1 fill-height kpi-card-hover" style="border-left: 5px solid #005A9C; background: #FFFFFF;">
+                                    <div class="d-flex align-center justify-space-between">
+                                        <div>
+                                            <div class="caption font-weight-bold grey--text text-uppercase">Total Pengajuan</div>
+                                            <div class="text-h4 font-weight-bold mt-1" style="color: #005A9C;">{{ approvalCounts.total }}</div>
+                                            <div class="caption font-weight-medium blue--text text--darken-2 mt-1">Akumulasi seluruh permohonan</div>
+                                        </div>
+                                        <v-avatar color="#EBF5FB" size="48">
+                                            <v-icon color="#005A9C" size="28">mdi-ballot-outline</v-icon>
+                                        </v-avatar>
+                                    </div>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+
+                        <!-- FILTER & SEARCH BAR -->
+                        <v-card outlined class="pa-4 rounded-lg mb-6 elevation-1" style="border: 1px solid #D8E0EA; background: #FFFFFF;">
+                            <v-row align="center" dense>
+                                <v-col cols="12" lg="4">
+                                    <v-text-field
+                                        v-model="approvalSearch"
+                                        placeholder="Cari kode booking, nama acara, PIC, email, NID..."
+                                        prepend-inner-icon="mdi-magnify"
+                                        outlined
+                                        dense
+                                        hide-details
+                                        clearable
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="8" lg="5">
+                                    <v-chip-group v-model="approvalStatusFilter" mandatory column class="approval-filter-chips">
+                                        <v-chip value="all" filter small outlined color="#005A9C">
+                                            Semua ({{ approvalCounts.total }})
+                                        </v-chip>
+                                        <v-chip value="pending" filter small outlined color="#D97706">
+                                            Pending ({{ approvalCounts.pending }})
+                                        </v-chip>
+                                        <v-chip value="approved" filter small outlined color="#16A34A">
+                                            Disetujui ({{ approvalCounts.approved }})
+                                        </v-chip>
+                                        <v-chip value="rejected" filter small outlined color="#DC2626">
+                                            Ditolak ({{ approvalCounts.rejected }})
+                                        </v-chip>
+                                    </v-chip-group>
+                                </v-col>
+                                <v-col cols="12" md="4" lg="3">
+                                    <v-select
+                                        v-model="approvalRoomFilter"
+                                        :items="roomFilterItems"
+                                        item-text="text"
+                                        item-value="value"
+                                        label="Filter Ruangan"
+                                        prepend-inner-icon="mdi-office-building"
+                                        outlined
+                                        dense
+                                        hide-details
+                                        clearable
+                                    ></v-select>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+
+                        <!-- TABEL DAFTAR PERMOHONAN RESERVASI (PROPORTIONAL & HIGH-LEGIBILITY) -->
+                        <v-card outlined class="rounded-lg elevation-1" style="border: 1px solid #D8E0EA; background: #FFFFFF;">
+                            <v-card-title class="py-4 px-6 d-flex align-center justify-space-between" style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0;">
+                                <div class="d-flex align-center">
+                                    <v-icon color="#005A9C" class="mr-2">mdi-format-list-checks</v-icon>
+                                    <span class="font-weight-bold text-h6" style="color: #072440;">
+                                        Daftar Permohonan Reservasi
+                                    </span>
+                                    <v-chip small color="#005A9C" dark class="ml-3 font-weight-bold">
+                                        {{ filteredApprovals.length }} Ditemukan
+                                    </v-chip>
+                                </div>
+                                <v-btn small color="#005A9C" outlined class="font-weight-bold" @click="loadAdminApprovals" :loading="approvalLoading">
+                                    <v-icon left small>mdi-refresh</v-icon> Segarkan
+                                </v-btn>
+                            </v-card-title>
+
+                            <!-- Loading State -->
+                            <div v-if="approvalLoading" class="text-center py-12">
+                                <v-progress-circular indeterminate color="#005A9C" size="48"></v-progress-circular>
+                                <div class="subtitle-2 font-weight-medium grey--text mt-3">Memuat permohonan reservasi...</div>
+                            </div>
+
+                            <!-- Empty State -->
+                            <div v-else-if="filteredApprovals.length === 0" class="text-center py-12">
+                                <v-icon size="56" color="grey lighten-1">mdi-clipboard-text-off-outline</v-icon>
+                                <h3 class="text-h6 font-weight-bold mt-2" style="color: #072440;">Tidak Ditemukan Pengajuan</h3>
+                                <p class="body-2 grey--text text--darken-1 mb-0">Tidak ada data reservasi yang sesuai dengan filter atau kata kunci pencarian Anda.</p>
+                            </div>
+
+                            <!-- TABEL BERUKURAN PROPORSIONAL & LEGA -->
+                            <div v-else style="overflow-x: auto;">
+                                <table class="approval-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 170px;">Kode & Tanggal</th>
+                                            <th style="width: 280px;">Nama Kegiatan & Ruangan</th>
+                                            <th style="width: 210px;">Jadwal Pelaksanaan</th>
+                                            <th style="width: 250px;">Data Pemohon</th>
+                                            <th style="width: 150px; text-align: center;">Status</th>
+                                            <th style="width: 180px; text-align: center;">Aksi Persetujuan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in paginatedApprovals" :key="item.agenda_id">
+                                            <!-- Kolom 1: Kode & Waktu Pengajuan -->
+                                            <td>
+                                                <div class="item-code-badge">{{ item.agenda_kode }}</div>
+                                                <div class="caption grey--text mt-1">
+                                                    <v-icon x-small color="grey">mdi-calendar-clock</v-icon> {{ item.created_at ? item.created_at.substring(0, 10) : '-' }}
+                                                </div>
+                                            </td>
+
+                                            <!-- Kolom 2: Nama Acara & Ruangan -->
+                                            <td>
+                                                <div class="item-title-text">{{ item.agenda_nama }}</div>
+                                                <div class="item-room-text">
+                                                    <v-icon small color="#005A9C" class="mr-1">mdi-door-open</v-icon>
+                                                    {{ item.agenda_tempat }}
+                                                </div>
+                                                <div v-if="item.agenda_detail" class="caption grey--text text--darken-1 mt-1 text-truncate" style="max-width: 260px;" :title="item.agenda_detail">
+                                                    {{ item.agenda_detail }}
+                                                </div>
+                                            </td>
+
+                                            <!-- Kolom 3: Jadwal Pelaksanaan -->
+                                            <td>
+                                                <div class="item-date-text">
+                                                    <v-icon small color="#072440" class="mr-1">mdi-calendar-range</v-icon>
+                                                    {{ formatDate(item.tgl_agenda) }}
+                                                    <span v-if="item.tgl_selesai && item.tgl_selesai !== item.tgl_agenda"><br/>s/d {{ formatDate(item.tgl_selesai) }}</span>
+                                                </div>
+                                                <div class="item-time-text">
+                                                    <v-icon small color="#005A9C" class="mr-1">mdi-clock-outline</v-icon>
+                                                    <strong>{{ item.waktu }} - {{ item.waktu_selesai }} WIB</strong>
+                                                </div>
+                                            </td>
+
+                                            <!-- Kolom 4: Data Pemohon (Nama, WhatsApp, Email, NID) -->
+                                            <td>
+                                                <div class="item-pic-name">{{ item.agenda_pic_nama }}</div>
+                                                <div class="item-pic-meta" v-if="item.agenda_pic_nid && item.agenda_pic_nid !== '-'">
+                                                    <v-icon x-small color="grey darken-1">mdi-card-account-details-outline</v-icon>
+                                                    NID: <strong>{{ item.agenda_pic_nid }}</strong>
+                                                </div>
+                                                <div class="item-pic-meta" v-if="item.agenda_pic_email && item.agenda_pic_email !== '-'">
+                                                    <a :href="'mailto:' + item.agenda_pic_email" style="text-decoration: none; color: #005A9C; font-weight: 500;">
+                                                        <v-icon x-small color="#005A9C">mdi-email-outline</v-icon> {{ item.agenda_pic_email }}
+                                                    </a>
+                                                </div>
+                                                <div class="item-pic-meta" v-if="item.agenda_pic_kontak && item.agenda_pic_kontak !== '-'">
+                                                    <a :href="'https://wa.me/' + cleanPhone(item.agenda_pic_kontak)" target="_blank" style="text-decoration: none; color: #16A34A; font-weight: 600;">
+                                                        <v-icon x-small color="green darken-2">mdi-whatsapp</v-icon> {{ item.agenda_pic_kontak }}
+                                                    </a>
+                                                </div>
+                                            </td>
+
+                                            <!-- Kolom 5: Status -->
+                                            <td style="text-align: center;">
+                                                <v-chip small :color="getApprovalBadgeColor(item.jenis_agenda)" dark class="font-weight-bold px-3 py-1">
+                                                    <v-icon left x-small>{{ getApprovalBadgeIcon(item.jenis_agenda) }}</v-icon>
+                                                    {{ getApprovalStatusLabel(item.jenis_agenda) }}
+                                                </v-chip>
+                                            </td>
+
+                                            <!-- Kolom 6: Aksi Persetujuan Proporsional -->
+                                            <td style="text-align: center;">
+                                                <!-- Jika Status Pending (0) -->
+                                                <div v-if="item.jenis_agenda === 0" class="d-flex align-center justify-center flex-column">
+                                                    <v-btn block color="#16A34A" dark class="mb-2 font-weight-bold elevation-1" style="height: 38px; font-size: 13.5px;" @click="confirmApprove(item)" :loading="item.loadingApprove">
+                                                        <v-icon left small>mdi-check-circle</v-icon> Setujui
+                                                    </v-btn>
+                                                    <v-btn block outlined color="#DC2626" class="font-weight-bold" style="height: 36px; font-size: 13.5px;" @click="confirmReject(item)" :loading="item.loadingReject">
+                                                        <v-icon left small>mdi-close-circle</v-icon> Tolak
+                                                    </v-btn>
+                                                </div>
+                                                <!-- Jika Status Disetujui (1) -->
+                                                <div v-else-if="item.jenis_agenda === 1" class="d-flex align-center justify-center">
+                                                    <v-chip small outlined color="green darken-2" class="font-weight-bold mr-2">
+                                                        <v-icon left x-small>mdi-check</v-icon> Terkonfirmasi
+                                                    </v-chip>
+                                                    <v-btn icon small color="red" @click="confirmReject(item)" title="Batalkan Persetujuan">
+                                                        <v-icon small>mdi-close-circle-outline</v-icon>
+                                                    </v-btn>
+                                                </div>
+                                                <!-- Jika Status Ditolak (2) -->
+                                                <div v-else class="d-flex align-center justify-center">
+                                                    <v-chip small outlined color="red darken-2" class="font-weight-bold mr-2">
+                                                        <v-icon left x-small>mdi-close</v-icon> Ditolak
+                                                    </v-chip>
+                                                    <v-btn icon small color="green" @click="confirmApprove(item)" title="Setujui Kembali">
+                                                        <v-icon small>mdi-check-circle-outline</v-icon>
+                                                    </v-btn>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- PAGINATION CONTROLS -->
+                            <div class="py-4 px-6 d-flex align-center justify-space-between flex-wrap" style="background: #F8FAFC; border-top: 1px solid #E2E8F0;" v-if="filteredApprovals.length > itemsPerPage">
+                                <div class="caption font-weight-medium grey--text text--darken-1">
+                                    Menampilkan {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, filteredApprovals.length) }} dari {{ filteredApprovals.length }} permohonan
+                                </div>
+                                <v-pagination
+                                    v-model="currentPage"
+                                    :length="Math.ceil(filteredApprovals.length / itemsPerPage)"
+                                    :total-visible="7"
+                                    circle
+                                    color="#005A9C"
+                                ></v-pagination>
+                            </div>
+                        </v-card>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 3: MANAJEMEN AGENDA & JADWAL                        -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'agenda'">
+                        <v-card class="rounded-lg elevation-1 pa-4 mb-6" style="background:#FFFFFF;">
+                            <v-row dense align="center">
+                                <v-col cols="12" md="4">
+                                    <v-text-field
+                                        v-model="agendaSearch"
+                                        prepend-inner-icon="mdi-magnify"
+                                        label="Cari kegiatan, pemohon, atau kode agenda..."
+                                        outlined dense hide-details
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="4">
+                                    <v-select
+                                        v-model="agendaRoomFilter"
+                                        :items="roomOptions"
+                                        item-text="text"
+                                        item-value="value"
+                                        label="Filter Ruangan"
+                                        outlined dense hide-details
+                                    ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="4">
+                                    <v-select
+                                        v-model="agendaStatusFilter"
+                                        :items="[
+                                            { text: 'Semua Status Agenda', value: '' },
+                                            { text: 'Menunggu Persetujuan', value: '0' },
+                                            { text: 'Disetujui / Terkonfirmasi', value: '1' },
+                                            { text: 'Ditolak', value: '2' }
+                                        ]"
+                                        item-text="text"
+                                        item-value="value"
+                                        label="Filter Status"
+                                        outlined dense hide-details
+                                    ></v-select>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+
+                        <v-card class="rounded-lg elevation-1 overflow-hidden" style="background:#FFFFFF;">
+                            <div class="table-responsive">
+                                <table class="approval-table" style="width:100%; border-collapse:collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:160px;">Kode & Tgl</th>
+                                            <th>Nama Acara & Tempat</th>
+                                            <th style="width:230px;">Waktu & Pelaksanaan</th>
+                                            <th style="width:200px;">PIC / Pemohon</th>
+                                            <th style="width:130px; text-align:center;">Status</th>
+                                            <th style="width:140px; text-align:center;">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-if="paginatedAgendaList.length === 0">
+                                            <td colspan="6" class="text-center py-8 grey--text">
+                                                <v-icon large color="grey lighten-1">mdi-calendar-remove</v-icon>
+                                                <div class="mt-2 font-weight-medium">Tidak ada data agenda yang cocok</div>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="item in paginatedAgendaList" :key="item.agenda_id || item.id">
+                                            <td>
+                                                <div class="font-weight-bold" style="color: #005A9C;">{{ item.agenda_kode || '-' }}</div>
+                                                <div class="caption grey--text">{{ formatDate(item.created_at || item.tgl_agenda) }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="font-weight-bold" style="color:#072440;">{{ item.agenda_nama }}</div>
+                                                <div class="caption font-weight-bold" style="color:#005A9C;">
+                                                    <v-icon x-small color="#005A9C">mdi-door-open</v-icon> {{ item.room_nama || item.agenda_tempat || '-' }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="caption font-weight-medium">
+                                                    <v-icon x-small color="grey darken-2">mdi-calendar-range</v-icon> {{ item.tgl_agenda }}
+                                                    <span v-if="item.tgl_agenda_selesai && item.tgl_agenda_selesai !== item.tgl_agenda"> s/d {{ item.tgl_agenda_selesai }}</span>
+                                                </div>
+                                                <div class="caption grey--text">
+                                                    <v-icon x-small color="grey">mdi-clock-outline</v-icon> {{ item.waktu || '08:00' }} - {{ item.waktu_selesai || '17:00' }} WIB
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="font-weight-medium">{{ item.agenda_pic_nama || '-' }}</div>
+                                                <div class="caption green--text text--darken-2 font-weight-bold" v-if="item.agenda_pic_kontak">
+                                                    <v-icon x-small color="green darken-2">mdi-whatsapp</v-icon> {{ item.agenda_pic_kontak }}
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <v-chip small :color="getApprovalBadgeColor(item.jenis_agenda)" dark class="font-weight-bold">
+                                                    <v-icon left x-small>{{ getApprovalBadgeIcon(item.jenis_agenda) }}</v-icon>
+                                                    {{ getApprovalStatusLabel(item.jenis_agenda) }}
+                                                </v-chip>
+                                            </td>
+                                            <td class="text-center">
+                                                <v-btn icon small color="#005A9C" @click="openAgendaDialog(item)" title="Edit Agenda">
+                                                    <v-icon small>mdi-pencil</v-icon>
+                                                </v-btn>
+                                                <v-btn icon small color="red darken-2" @click="deleteAgenda(item)" title="Hapus Agenda">
+                                                    <v-icon small>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="py-3 px-6 d-flex align-center justify-space-between flex-wrap" style="background:#F8FAFC; border-top:1px solid #E2E8F0;" v-if="filteredAgendaList.length > agendaPerPage">
+                                <span class="caption grey--text text--darken-1">Total: {{ filteredAgendaList.length }} agenda</span>
+                                <v-pagination v-model="agendaCurrentPage" :length="Math.ceil(filteredAgendaList.length / agendaPerPage)" :total-visible="7" circle color="#005A9C"></v-pagination>
+                            </div>
+                        </v-card>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 4: MASTER KATALOG RUANGAN                           -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'rooms'">
+                        <v-card class="rounded-lg elevation-1 pa-4 mb-6" style="background:#FFFFFF;">
+                            <v-row dense align="center">
+                                <v-col cols="12" md="6">
+                                    <v-text-field
+                                        v-model="roomSearch"
+                                        prepend-inner-icon="mdi-magnify"
+                                        label="Cari ruangan berdasarkan nama atau kapasitas..."
+                                        outlined dense hide-details
+                                    ></v-text-field>
+                                </v-col>
+                                <v-spacer></v-spacer>
+                                <v-col cols="12" md="auto" class="text-md-right">
+                                    <v-chip small color="#EBF3FA" text-color="#005A9C" class="font-weight-bold">
+                                        <v-icon left x-small>mdi-office-building</v-icon>
+                                        {{ filteredRoomList.length }} dari {{ roomList.length }} ruangan
+                                    </v-chip>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+
+                        <v-card v-if="!filteredRoomList.length" class="rounded-lg elevation-1 pa-10 text-center">
+                            <v-icon size="48" color="#CBD5E0">mdi-door-closed-lock</v-icon>
+                            <div class="subtitle-1 font-weight-bold mt-3" style="color:#072440;">Ruangan tidak ditemukan</div>
+                            <div class="caption grey--text">Coba kata kunci lain atau tambahkan ruangan baru.</div>
+                        </v-card>
+
+                        <v-row>
+                            <v-col cols="12" sm="6" md="4" v-for="r in filteredRoomList" :key="r.room_id">
+                                <v-card class="rounded-lg elevation-1 fill-height d-flex flex-column" style="border-top: 4px solid #005A9C;">
+                                    <v-card-title class="font-weight-bold subtitle-1" style="color:#072440;">
+                                        <v-icon color="#005A9C" class="mr-2">mdi-door-closed</v-icon>
+                                        {{ r.room_nama }}
+                                    </v-card-title>
+                                    <v-card-subtitle class="caption mt-1 pb-1">
+                                        ID Ruangan: #{{ r.room_id }} &bull; <v-chip x-small color="green lighten-4" text-color="green darken-3" class="font-weight-bold">Aktif & Siap Pakai</v-chip>
+                                    </v-card-subtitle>
+                                    <v-card-text class="pt-0 flex-grow-1">
+                                        <div class="d-flex align-center mt-2 mb-3">
+                                            <v-icon small color="blue darken-3" class="mr-1">mdi-account-group</v-icon>
+                                            <span class="font-weight-bold">Kapasitas: {{ r.room_kapasitas }} Peserta</span>
+                                        </div>
+                                        <div class="caption grey--text text--darken-1">
+                                            <strong>Fasilitas:</strong> AC, Proyektor / Display, Sound System, Wi-Fi PLN, Papan Tulis, Stop Kontak Meja.
+                                        </div>
+                                    </v-card-text>
+                                    <v-divider></v-divider>
+                                    <v-card-actions class="px-4 py-2 justify-end">
+                                        <v-btn small text color="#005A9C" class="font-weight-bold" @click="openRoomDialog(r)">
+                                            <v-icon left small>mdi-pencil</v-icon> Edit
+                                        </v-btn>
+                                        <v-btn small text color="red darken-2" class="font-weight-bold" @click="deleteRoom(r)">
+                                            <v-icon left small>mdi-delete</v-icon> Hapus
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 5: SLIDESHOW BERANDA                                -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'slideshow'">
+                        <v-card class="rounded-lg elevation-1 pa-4 mb-6" style="background:#FFFFFF;">
+                            <div class="d-flex align-center justify-space-between flex-wrap">
+                                <div>
+                                    <div class="font-weight-bold subtitle-1" style="color:#072440;">Banner Carousel Portal Depan</div>
+                                    <div class="caption grey--text">Daftar slide aktif yang tampil di carousel beranda utama portal publik.</div>
+                                </div>
+                                <v-chip small color="#EBF3FA" text-color="#005A9C" class="font-weight-bold mt-2 mt-sm-0">
+                                    <v-icon left x-small>mdi-image-outline</v-icon>
+                                    {{ slideshowList.length }} Slide Terdaftar
+                                </v-chip>
+                            </div>
+                        </v-card>
+
+                        <v-card v-if="!slideshowList.length" class="rounded-lg elevation-1 pa-10 text-center mb-6">
+                            <v-icon size="48" color="#CBD5E0">mdi-image-multiple-outline</v-icon>
+                            <div class="subtitle-1 font-weight-bold mt-3" style="color:#072440;">Belum ada slide banner</div>
+                            <div class="caption grey--text">Gunakan tombol "Unggah Slide Baru" di atas untuk menambahkan slide banner.</div>
+                        </v-card>
+
+                        <v-row v-else>
+                            <v-col cols="12" sm="6" md="4" v-for="s in slideshowList" :key="s.slideshow_id">
+                                <v-card class="rounded-lg elevation-1 overflow-hidden fill-height d-flex flex-column">
+                                    <v-img :src="s.image_slide && (s.image_slide.startsWith('/') ? s.image_slide : '/' + s.image_slide)" height="180" class="grey lighten-2">
+                                        <template v-slot:placeholder>
+                                            <v-row class="fill-height ma-0" align="center" justify="center">
+                                                <v-icon large color="grey lighten-1">mdi-image</v-icon>
+                                            </v-row>
+                                        </template>
+                                    </v-img>
+                                    <v-card-title class="font-weight-bold subtitle-1 pb-1" style="color:#072440;">
+                                        {{ s.title_slide || 'Slide Tanpa Judul' }}
+                                    </v-card-title>
+                                    <v-card-text class="caption flex-grow-1 grey--text text--darken-1">
+                                        {{ s.deskripsi_slide || 'Tidak ada keterangan tambahan.' }}
+                                    </v-card-text>
+                                    <v-divider></v-divider>
+                                    <v-card-actions class="px-4 py-2 d-flex align-center justify-space-between">
+                                        <v-switch
+                                            :input-value="s.status === 1"
+                                            @change="toggleSlideStatus(s)"
+                                            dense hide-details
+                                            :label="s.status === 1 ? 'Aktif' : 'Nonaktif'"
+                                            color="green darken-2"
+                                            class="ma-0 pa-0"
+                                        ></v-switch>
+                                        <v-btn small text color="red darken-2" class="font-weight-bold" @click="deleteSlide(s)">
+                                            <v-icon left small>mdi-delete</v-icon> Hapus
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 6: HALAMAN WEB (PAGES)                              -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'pages'">
+                        <v-card class="rounded-lg elevation-1 overflow-hidden" style="background:#FFFFFF;">
+                            <v-data-table
+                                :headers="[
+                                    { text: 'Judul Halaman', value: 'page_title' },
+                                    { text: 'Slug URL', value: 'slug', width: '180px' },
+                                    { text: 'Status', value: 'active', width: '120px' },
+                                    { text: 'Terakhir Diperbarui', value: 'updated_at', width: '200px' },
+                                    { text: 'Aksi', value: 'actions', sortable: false, width: '120px', align: 'center' }
+                                ]"
+                                :items="pagesList"
+                                :loading="pagesLoading"
+                                class="elevation-0"
+                                no-data-text="Belum ada halaman statis"
+                            >
+                                <template v-slot:item.page_title="{ item }">
+                                    <span class="font-weight-bold" style="color:#072440;">
+                                        <v-icon small color="#005A9C" class="mr-1">mdi-file-document-outline</v-icon>
+                                        {{ item.page_title }}
+                                    </span>
+                                </template>
+                                <template v-slot:item.slug="{ item }">
+                                    <v-chip small outlined color="primary">/{{ item.slug }}</v-chip>
+                                </template>
+                                <template v-slot:item.active="{ item }">
+                                    <v-chip small color="green lighten-4" text-color="green darken-3" class="font-weight-bold">Aktif</v-chip>
+                                </template>
+                                <template v-slot:item.actions="{ item }">
+                                    <v-btn small color="#005A9C" dark class="font-weight-bold" @click="openPageDialog(item)">
+                                        <v-icon left small>mdi-pencil</v-icon> Edit
+                                    </v-btn>
+                                </template>
+                            </v-data-table>
+                        </v-card>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 7: KELOLA PENGGUNA                                   -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'users'">
+                        <v-card class="rounded-lg elevation-1 pa-4 mb-6" style="background:#FFFFFF;">
+                            <v-row dense align="center">
+                                <v-col cols="12" md="6">
+                                    <v-text-field
+                                        v-model="userSearch"
+                                        prepend-inner-icon="mdi-magnify"
+                                        label="Cari pengguna berdasarkan NID, nama lengkap, atau email..."
+                                        outlined dense hide-details
+                                    ></v-text-field>
+                                </v-col>
+                                <v-spacer></v-spacer>
+                                <v-col cols="12" md="auto">
+                                    <v-chip small color="#EBF3FA" text-color="#005A9C" class="font-weight-bold">
+                                        <v-icon left x-small>mdi-account-group</v-icon>
+                                        {{ filteredUserList.length }} Pengguna Terdaftar
+                                    </v-chip>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+
+                        <v-card class="rounded-lg elevation-1 overflow-hidden" style="background:#FFFFFF;">
+                            <v-data-table
+                                :headers="[
+                                    { text: 'NID / Username', value: 'username' },
+                                    { text: 'Nama Lengkap', value: 'fullname' },
+                                    { text: 'Email', value: 'email' },
+                                    { text: 'Peran / Group', value: 'group_name' },
+                                    { text: 'Status', value: 'is_active', width: '120px' },
+                                    { text: 'Aksi', value: 'actions', sortable: false, width: '140px', align: 'center' }
+                                ]"
+                                :items="filteredUserList"
+                                :loading="userLoading"
+                                class="elevation-0"
+                                no-data-text="Belum ada data pengguna"
+                            >
+                                <template v-slot:item.username="{ item }">
+                                    <span class="font-weight-bold" style="color:#005A9C;">{{ item.nid || item.username }}</span>
+                                </template>
+                                <template v-slot:item.fullname="{ item }">
+                                    <span class="font-weight-medium" style="color:#072440;">{{ item.fullname || item.username }}</span>
+                                </template>
+                                <template v-slot:item.group_name="{ item }">
+                                    <v-chip small :color="item.user_type === 1 || (item.group_name && item.group_name.toLowerCase().includes('admin')) ? 'primary' : 'grey lighten-2'" :dark="item.user_type === 1 || (item.group_name && item.group_name.toLowerCase().includes('admin'))" class="font-weight-bold">
+                                        {{ item.group_name || (item.user_type === 1 ? 'Administrator' : 'User') }}
+                                    </v-chip>
+                                </template>
+                                <template v-slot:item.is_active="{ item }">
+                                    <v-chip small color="green lighten-4" text-color="green darken-3" class="font-weight-bold">Aktif</v-chip>
+                                </template>
+                                <template v-slot:item.actions="{ item }">
+                                    <v-btn icon small color="#005A9C" @click="openUserDialog(item)" title="Edit Pengguna">
+                                        <v-icon small>mdi-pencil</v-icon>
+                                    </v-btn>
+                                    <v-btn icon small color="red darken-2" @click="deleteUser(item)" title="Hapus Pengguna" :disabled="item.username === 'admin'">
+                                        <v-icon small>mdi-delete</v-icon>
+                                    </v-btn>
+                                </template>
+                            </v-data-table>
+                        </v-card>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 8: PENGATURAN SISTEM                                -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'settings'">
+                        <v-row>
+                            <!-- KOLOM 1: IDENTITAS INSTANSI -->
+                            <v-col cols="12" lg="6">
+                                <v-card class="rounded-lg elevation-1 pa-6 mb-6" style="background:#FFFFFF;">
+                                    <div class="font-weight-bold subtitle-1 mb-4" style="color:#072440;">
+                                        <v-icon color="#005A9C" class="mr-2">mdi-office-building-cog</v-icon> Profil & Identitas Instansi
+                                    </div>
+                                    <v-text-field v-model="settingsForm.app_name" label="Nama Aplikasi" outlined dense class="mb-3"></v-text-field>
+                                    <v-text-field v-model="settingsForm.company_name" label="Nama Perusahaan / Divisi" outlined dense class="mb-3"></v-text-field>
+                                    <v-textarea v-model="settingsForm.company_address" label="Alamat Kantor Resmi" outlined dense rows="3" class="mb-3"></v-textarea>
+                                    <v-row dense>
+                                        <v-col cols="12" sm="6">
+                                            <v-text-field v-model="settingsForm.company_telp" label="No. Telepon / WhatsApp" outlined dense class="mb-3"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6">
+                                            <v-text-field v-model="settingsForm.company_email" label="Email Resmi Layanan" outlined dense class="mb-3"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-btn color="#005A9C" dark class="font-weight-bold" @click="saveSettingsForm()" :loading="settingsLoading">
+                                        <v-icon left small>mdi-content-save</v-icon> Simpan Pengaturan Instansi
+                                    </v-btn>
+                                </v-card>
+                            </v-col>
+
+                            <!-- KOLOM 2: INTEGRASI LAYANAN EMAIL (SMTP) -->
+                            <v-col cols="12" lg="6">
+                                <v-card class="rounded-lg elevation-1 pa-6 mb-6" style="background:#FFFFFF;">
+                                    <div class="d-flex align-center justify-space-between mb-4 flex-wrap">
+                                        <div class="font-weight-bold subtitle-1" style="color:#072440;">
+                                            <v-icon color="#005A9C" class="mr-2">mdi-email-cog</v-icon> Integrasi Layanan Email (SMTP Server)
+                                        </div>
+                                        <v-chip x-small :color="smtpConfigStatus && smtpConfigStatus.has_password ? 'green' : 'amber darken-2'" dark class="font-weight-bold">
+                                            {{ smtpConfigStatus && smtpConfigStatus.has_password ? 'SMTP Terautentikasi' : 'Kredensial Belum Lengkap' }}
+                                        </v-chip>
+                                    </div>
+
+                                    <!-- Quick Preset Selector -->
+                                    <div class="mb-3 d-flex align-center flex-wrap">
+                                        <span class="caption grey--text mr-2 font-weight-bold">Template Cepat:</span>
+                                        <v-btn x-small outlined color="#005A9C" class="mr-2 mb-1" @click="applySmtpPreset('gmail')">
+                                            <v-icon left x-small>mdi-google</v-icon> Gmail SMTP (587)
+                                        </v-btn>
+                                        <v-btn x-small outlined color="grey darken-1" class="mb-1" @click="applySmtpPreset('local')">
+                                            <v-icon left x-small>mdi-server</v-icon> Localhost (587)
+                                        </v-btn>
+                                    </div>
+
+                                    <v-row dense>
+                                        <v-col cols="12" sm="8">
+                                            <v-text-field v-model="settingsForm.smtp_host" label="SMTP Server Host (cth: smtp.gmail.com)" outlined dense class="mb-2"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="4">
+                                            <v-text-field v-model="settingsForm.smtp_port" label="Port" outlined dense class="mb-2" type="number"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-text-field v-model="settingsForm.smtp_user" label="Username / Email Akun Pengirim" outlined dense class="mb-2" hint="Contoh: theopinem05@gmail.com"></v-text-field>
+                                    <v-text-field 
+                                        v-model="settingsForm.smtp_password" 
+                                        :type="showSmtpPassword ? 'text' : 'password'" 
+                                        label="Password / Google App Password" 
+                                        outlined dense class="mb-2"
+                                        :append-icon="showSmtpPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                        @click:append="showSmtpPassword = !showSmtpPassword"
+                                        hint="Gunakan Google App Password (16 karakter tanpa spasi) bila menggunakan Gmail.">
+                                    </v-text-field>
+
+                                    <v-row dense>
+                                        <v-col cols="12" sm="6">
+                                            <v-text-field v-model="settingsForm.smtp_from_email" label="Alamat Pengirim (From Email)" outlined dense class="mb-2"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="6">
+                                            <v-text-field v-model="settingsForm.smtp_from_name" label="Nama Pengirim (Sender Name)" outlined dense class="mb-2"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <div class="d-flex align-center flex-wrap mt-1 mb-4">
+                                        <v-switch v-model="settingsForm.smtp_use_tls" label="STARTTLS (Port 587)" dense hide-details class="mr-4 mt-0"></v-switch>
+                                        <v-switch v-model="settingsForm.smtp_use_ssl" label="SSL (Port 465)" dense hide-details class="mt-0"></v-switch>
+                                    </div>
+
+                                    <div class="d-flex align-center flex-wrap">
+                                        <v-btn color="#005A9C" dark class="font-weight-bold mr-2 mb-2" @click="saveSettingsForm()" :loading="settingsLoading">
+                                            <v-icon left small>mdi-content-save</v-icon> Simpan Pengaturan SMTP
+                                        </v-btn>
+                                        <v-btn outlined color="#16A34A" class="font-weight-bold mb-2" @click="openTestEmailDialog()">
+                                            <v-icon left small>mdi-email-send</v-icon> Uji Kirim Email (Test Email)
+                                        </v-btn>
+                                    </div>
+                                </v-card>
+                            </v-col>
+
+                            <!-- CARD 3: KEAMANAN AKUN & GANTI KATA SANDI -->
+                            <v-col cols="12" lg="6">
+                                <v-card class="rounded-lg elevation-1 pa-6 mb-6 fill-height" style="background:#FFFFFF;">
+                                    <div class="font-weight-bold subtitle-1 mb-2" style="color:#072440;">
+                                        <v-icon color="#005A9C" class="mr-2">mdi-lock-reset</v-icon> Keamanan Akun & Ganti Kata Sandi
+                                    </div>
+                                    <p class="caption grey--text mb-4">
+                                        Perbarui kata sandi akun administrator Anda untuk menjaga keamanan akses sistem reservasi TDC.
+                                    </p>
+
+                                    <v-form @submit.prevent="submitDashboardChangePassword">
+                                        <v-text-field
+                                            v-model="changePwdForm.current_password"
+                                            label="Kata Sandi Saat Ini *"
+                                            outlined dense class="mb-2"
+                                            :type="showCurrentPwd ? 'text' : 'password'"
+                                            :append-icon="showCurrentPwd ? 'mdi-eye' : 'mdi-eye-off'"
+                                            @click:append="showCurrentPwd = !showCurrentPwd"
+                                            placeholder="Masukkan kata sandi lama"
+                                        ></v-text-field>
+
+                                        <v-text-field
+                                            v-model="changePwdForm.new_password"
+                                            label="Kata Sandi Baru (Minimal 6 Karakter) *"
+                                            outlined dense class="mb-2"
+                                            :type="showNewPwd ? 'text' : 'password'"
+                                            :append-icon="showNewPwd ? 'mdi-eye' : 'mdi-eye-off'"
+                                            @click:append="showNewPwd = !showNewPwd"
+                                            placeholder="Minimal 6 karakter"
+                                            hint="Gunakan kombinasi huruf, angka, atau simbol"
+                                            persistent-hint
+                                        ></v-text-field>
+
+                                        <v-text-field
+                                            v-model="changePwdForm.confirm_password"
+                                            label="Konfirmasi Kata Sandi Baru *"
+                                            outlined dense class="mb-4"
+                                            :type="showConfirmPwd ? 'text' : 'password'"
+                                            :append-icon="showConfirmPwd ? 'mdi-eye' : 'mdi-eye-off'"
+                                            @click:append="showConfirmPwd = !showConfirmPwd"
+                                            placeholder="Ulangi kata sandi baru"
+                                        ></v-text-field>
+
+                                        <v-btn
+                                            color="#005A9C"
+                                            dark
+                                            class="font-weight-bold"
+                                            :loading="changePwdLoading"
+                                            @click="submitDashboardChangePassword"
+                                        >
+                                            <v-icon left small>mdi-shield-key</v-icon> Perbarui Kata Sandi
+                                        </v-btn>
+                                    </v-form>
+                                </v-card>
+                            </v-col>
+
+                            <!-- CARD 4: AUDIT LOG NOTIFIKASI EMAIL -->
+                            <v-col cols="12" lg="6">
+                                <v-card class="rounded-lg elevation-1 pa-6 mb-6 fill-height" style="background:#FFFFFF;">
+                                    <div class="d-flex align-center justify-space-between mb-4 flex-wrap">
+                                        <div>
+                                            <div class="font-weight-bold subtitle-1" style="color:#072440;">
+                                                <v-icon color="#005A9C" class="mr-2">mdi-history</v-icon> Audit Log Notifikasi Email Otomatis
+                                            </div>
+                                            <span class="caption grey--text">
+                                                Catatan pengiriman email transaksi reservasi masuk dan persetujuan secara real-time.
+                                            </span>
+                                        </div>
+                                        <v-btn small outlined color="#005A9C" @click="loadEmailLogs()" :loading="emailLogsLoading">
+                                            <v-icon left small>mdi-refresh</v-icon> Segarkan Log
+                                        </v-btn>
+                                    </div>
+
+                                    <div v-if="emailLogs.length === 0" class="py-6 text-center grey--text">
+                                        <v-icon size="36" color="grey lighten-2">mdi-email-outline</v-icon>
+                                        <p class="caption mt-2 mb-0">Belum ada catatan log notifikasi email.</p>
+                                    </div>
+
+                                    <v-list dense v-else class="pa-0" style="max-height: 280px; overflow-y: auto; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px;">
+                                        <v-list-item v-for="(log, idx) in emailLogs" :key="idx" class="border-bottom py-2">
+                                            <v-list-item-content>
+                                                <div class="d-flex align-center flex-wrap">
+                                                    <v-chip x-small class="mr-2 font-weight-bold" 
+                                                        :color="log.includes('[SENT]') ? 'green darken-1' : (log.includes('[SIMULATED]') ? 'amber darken-3' : 'red darken-2')" 
+                                                        dark>
+                                                        {{ log.includes('[SENT]') ? 'SENT' : (log.includes('[SIMULATED]') ? 'SIMULATED' : 'ERROR') }}
+                                                    </v-chip>
+                                                    <span class="caption font-weight-bold" style="font-family: monospace; color: #1E293B;">{{ log }}</span>
+                                                </div>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+
+                        <!-- Modal Dialog Uji Kirim Email (Test Email) -->
+                        <v-dialog v-model="testEmailDialog" max-width="500">
+                            <v-card class="rounded-lg">
+                                <v-card-title class="py-3 px-6" style="background:#072440; color:#FFFFFF;">
+                                    <v-icon color="#FFD200" class="mr-2">mdi-email-fast</v-icon>
+                                    <span class="subtitle-1 font-weight-bold">Uji Coba Pengiriman Email SMTP</span>
+                                </v-card-title>
+                                <v-card-text class="pa-6">
+                                    <p class="caption grey--text mb-4">
+                                        Sistem akan mengirimkan email uji coba menggunakan kredensial SMTP yang saat ini terisi pada form di atas.
+                                    </p>
+                                    <v-text-field 
+                                        v-model="testEmailTarget" 
+                                        label="Alamat Email Tujuan Uji Coba" 
+                                        outlined dense 
+                                        placeholder="cth: theopinem05@gmail.com"
+                                        prepend-inner-icon="mdi-email-arrow-right">
+                                    </v-text-field>
+
+                                    <v-alert v-if="testEmailMessage" dense outlined :type="testEmailSuccess ? 'success' : 'error'" class="caption mb-0 mt-2">
+                                        {{ testEmailMessage }}
+                                    </v-alert>
+                                </v-card-text>
+                                <v-card-actions class="px-6 pb-5 pt-0">
+                                    <v-spacer></v-spacer>
+                                    <v-btn text @click="testEmailDialog = false">Tutup</v-btn>
+                                    <v-btn color="#005A9C" dark class="font-weight-bold px-4" @click="sendTestEmail()" :loading="testEmailLoading">
+                                        <v-icon left small>mdi-send</v-icon> Kirim Sekarang
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </div>
+
+                    <!-- ======================================================== -->
+                    <!-- TAB 9: BACKUP BASIS DATA                                -->
+                    <!-- ======================================================== -->
+                    <div v-show="currentView === 'backup'">
+                        <v-card class="rounded-lg elevation-1 pa-6 mb-6" style="background:#FFFFFF;">
+                            <div class="d-flex align-center justify-space-between flex-wrap">
+                                <div>
+                                    <div class="font-weight-bold text-h6" style="color:#072440;">Cadangan Basis Data SQLite TDC</div>
+                                    <p class="caption grey--text mb-0 mt-1">
+                                        Pencadangan menggunakan SQLite Online Backup API yang aman dijalankan kapan saja tanpa mengunci transaksi aktif.
+                                    </p>
+                                </div>
+                                <div class="d-flex align-center mt-3 mt-sm-0">
+                                    <v-chip color="green lighten-4" text-color="green darken-3" class="font-weight-bold mr-2">
+                                        <v-icon left x-small>mdi-check-decagram</v-icon> Basis Data Sehat
+                                    </v-chip>
+                                    <v-chip color="#EBF3FA" text-color="#005A9C" class="font-weight-bold">
+                                        <v-icon left x-small>mdi-database-clock</v-icon> {{ backupList.length }} Berkas Cadangan
+                                    </v-chip>
+                                </div>
+                            </div>
+                        </v-card>
+
+                        <v-card class="rounded-lg elevation-1 overflow-hidden" style="background:#FFFFFF;">
+                            <v-card-title class="subtitle-1 font-weight-bold" style="color:#072440;">
+                                <v-icon color="#005A9C" class="mr-2">mdi-history</v-icon> Riwayat File Cadangan (.db)
+                            </v-card-title>
+                            <v-data-table
+                                :headers="[
+                                    { text: 'Nama Berkas Cadangan', value: 'file_name' },
+                                    { text: 'Ukuran', value: 'file_size', width: '160px' },
+                                    { text: 'Tanggal & Waktu Pembuatan', value: 'created_at', width: '240px' },
+                                    { text: 'Aksi', value: 'actions', sortable: false, width: '160px', align: 'center' }
+                                ]"
+                                :items="backupList"
+                                :loading="backupLoading"
+                                class="elevation-0"
+                                no-data-text="Belum ada riwayat berkas cadangan"
+                            >
+                                <template v-slot:item.file_name="{ item }">
+                                    <span class="font-weight-medium" style="color:#072440;">
+                                        <v-icon small color="#005A9C" class="mr-1">mdi-database-arrow-down</v-icon>
+                                        {{ item.file_name }}
+                                    </span>
+                                </template>
+                                <template v-slot:item.file_size="{ item }">
+                                    <v-chip small outlined color="grey darken-2" class="font-weight-bold">{{ item.file_size }}</v-chip>
+                                </template>
+                                <template v-slot:item.actions="{ item }">
+                                    <v-btn small color="#005A9C" dark class="font-weight-bold" :href="item.download_url" target="_blank" elevation="0">
+                                        <v-icon small left>mdi-download</v-icon> Unduh File
+                                    </v-btn>
+                                </template>
+                            </v-data-table>
+                        </v-card>
+                    </div>
+
+                </v-container>
+            </v-main>
+
+            
+            <!-- DIALOG MASTER RUANGAN -->
+            <v-dialog v-model="roomDialog" max-width="500px">
+                <v-card class="rounded-lg">
+                    <v-card-title class="font-weight-bold" style="background:#072440; color:#FFFFFF;">
+                        <v-icon left color="#FFD200">mdi-office-building</v-icon>
+                        {{ roomForm.room_id ? 'Edit Data Ruangan' : 'Tambah Ruangan Baru' }}
+                    </v-card-title>
+                    <v-card-text class="pt-6">
+                        <v-text-field v-model="roomForm.room_nama" label="Nama Ruangan *" outlined dense class="mb-3"></v-text-field>
+                        <v-text-field v-model.number="roomForm.room_kapasitas" label="Kapasitas Peserta (Orang) *" type="number" outlined dense class="mb-3"></v-text-field>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions class="px-6 py-3">
+                        <v-spacer></v-spacer>
+                        <v-btn text @click="roomDialog = false">Batal</v-btn>
+                        <v-btn color="#005A9C" dark class="font-weight-bold" @click="saveRoomForm()" :loading="roomSubmitting">Simpan Ruangan</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!-- DIALOG MASTER SLIDESHOW -->
+            <v-dialog v-model="slideDialog" max-width="550px">
+                <v-card class="rounded-lg">
+                    <v-card-title class="font-weight-bold" style="background:#072440; color:#FFFFFF;">
+                        <v-icon left color="#FFD200">mdi-image-plus</v-icon> Unggah Slide Carousel Baru
+                    </v-card-title>
+                    <v-card-text class="pt-6">
+                        <v-file-input v-model="slideFile" label="Pilih Berkas Gambar (JPG/PNG/WEBP) *" outlined dense prepend-icon="mdi-camera" class="mb-3"></v-file-input>
+                        <v-text-field v-model="slideForm.title_slide" label="Judul Slide (Opsional)" outlined dense class="mb-3"></v-text-field>
+                        <v-textarea v-model="slideForm.deskripsi_slide" label="Deskripsi Singkat (Opsional)" outlined dense rows="2" class="mb-3"></v-textarea>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions class="px-6 py-3">
+                        <v-spacer></v-spacer>
+                        <v-btn text @click="slideDialog = false">Batal</v-btn>
+                        <v-btn color="#005A9C" dark class="font-weight-bold" @click="saveSlideForm()" :loading="slideSubmitting">Unggah & Simpan</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!-- DIALOG EDIT HALAMAN (PAGES) -->
+            <v-dialog v-model="pageDialog" max-width="700px">
+                <v-card class="rounded-lg">
+                    <v-card-title class="font-weight-bold" style="background:#072440; color:#FFFFFF;">
+                        <v-icon left color="#FFD200">mdi-file-document-edit</v-icon> Edit Konten Halaman Web
+                    </v-card-title>
+                    <v-card-text class="pt-6">
+                        <v-text-field v-model="pageForm.page_title" label="Judul Halaman *" outlined dense class="mb-3"></v-text-field>
+                        <v-textarea v-model="pageForm.page_body" label="Isi Konten *" outlined rows="8" class="mb-3"></v-textarea>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions class="px-6 py-3">
+                        <v-spacer></v-spacer>
+                        <v-btn text @click="pageDialog = false">Batal</v-btn>
+                        <v-btn color="#005A9C" dark class="font-weight-bold" @click="savePageForm()" :loading="pageSubmitting">Simpan Halaman</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!-- DIALOG USER -->
+            <v-dialog v-model="userDialog" max-width="500px">
+                <v-card class="rounded-lg">
+                    <v-card-title class="font-weight-bold" style="background:#072440; color:#FFFFFF;">
+                        <v-icon left color="#FFD200">mdi-account-cog</v-icon>
+                        {{ userForm.user_id ? 'Edit Akun Pengguna' : 'Tambah Pengguna Baru' }}
+                    </v-card-title>
+                    <v-card-text class="pt-6">
+                        <v-text-field v-model="userForm.username" label="Nomor Induk Dinas (NID) / Username *" outlined dense class="mb-3" :disabled="!!userForm.user_id"></v-text-field>
+                        <v-text-field v-model="userForm.fullname" label="Nama Lengkap *" outlined dense class="mb-3"></v-text-field>
+                        <v-text-field v-model="userForm.email" label="Alamat Email *" type="email" outlined dense class="mb-3"></v-text-field>
+                        <v-select
+                            v-model="userForm.group_id"
+                            :items="groupOptions"
+                            item-text="text"
+                            item-value="value"
+                            label="Peran / Hak Akses *"
+                            outlined dense class="mb-3"
+                        ></v-select>
+                        <v-text-field v-model="userForm.password" :label="userForm.user_id ? 'Kata Sandi Baru (Kosongkan jika tidak diganti)' : 'Kata Sandi *'" type="password" outlined dense class="mb-3"></v-text-field>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions class="px-6 py-3">
+                        <v-spacer></v-spacer>
+                        <v-btn text @click="userDialog = false">Batal</v-btn>
+                        <v-btn color="#005A9C" dark class="font-weight-bold" @click="saveUserForm()" :loading="userSubmitting">Simpan Akun</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!-- DIALOG TAMBAH/EDIT AGENDA -->
+            <v-dialog v-model="agendaDialog" max-width="600px">
+                <v-card class="rounded-lg">
+                    <v-card-title class="font-weight-bold" style="background:#072440; color:#FFFFFF;">
+                        <v-icon left color="#FFD200">mdi-calendar-edit</v-icon>
+                        {{ agendaForm.agenda_id ? 'Edit Agenda Kegiatan' : 'Tambah Agenda Baru' }}
+                    </v-card-title>
+                    <v-card-text class="pt-6">
+                        <v-text-field v-model="agendaForm.agenda_nama" label="Nama Kegiatan / Acara *" outlined dense class="mb-3"></v-text-field>
+                        <v-select
+                            v-model="agendaForm.agenda_tempat"
+                            :items="roomOptions.filter(r => r.value)"
+                            item-text="text"
+                            item-value="value"
+                            label="Pilih Ruangan *"
+                            outlined dense class="mb-3"
+                        ></v-select>
+                        <v-row dense>
+                            <v-col cols="12" sm="6">
+                                <v-text-field v-model="agendaForm.tgl_agenda" label="Tanggal Mulai *" type="date" outlined dense class="mb-3"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6">
+                                <v-text-field v-model="agendaForm.tgl_agenda_selesai" label="Tanggal Selesai" type="date" outlined dense class="mb-3"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row dense>
+                            <v-col cols="12" sm="6">
+                                <v-text-field v-model="agendaForm.waktu" label="Jam Mulai" type="time" outlined dense class="mb-3"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6">
+                                <v-text-field v-model="agendaForm.waktu_selesai" label="Jam Selesai" type="time" outlined dense class="mb-3"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-text-field v-model="agendaForm.agenda_pic_nama" label="Nama PIC / Pemohon *" outlined dense class="mb-3"></v-text-field>
+                        <v-text-field v-model="agendaForm.agenda_pic_kontak" label="Nomor WhatsApp PIC *" outlined dense class="mb-3"></v-text-field>
+                        <v-text-field v-model="agendaForm.agenda_pic_email" label="Email PIC" outlined dense class="mb-3"></v-text-field>
+                        <v-textarea v-model="agendaForm.agenda_detail" label="Catatan / Detail Tambahan" outlined dense rows="2" class="mb-3"></v-textarea>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions class="px-6 py-3">
+                        <v-spacer></v-spacer>
+                        <v-btn text @click="agendaDialog = false">Batal</v-btn>
+                        <v-btn color="#005A9C" dark class="font-weight-bold" @click="saveAgendaForm()" :loading="agendaSubmitting">Simpan Agenda</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!-- SNACKBAR NOTIFIKASI -->
+            <v-snackbar v-model="snackbar" :timeout="timeout" style="bottom:20px;" :color="snackbarColor || '#072440'">
+                <div class="d-flex align-center">
+                    <v-icon left dark class="mr-2">{{ snackbarIcon || 'mdi-information' }}</v-icon>
+                    <span>{{ snackbarMessage }}</span>
+                </div>
+                <template v-slot:action="{ attrs }">
+                    <v-btn text dark v-bind="attrs" @click="snackbar = false">
+                        Tutup
+                    </v-btn>
+                </template>
+            </v-snackbar>
+        </v-app>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="/assets/js/vue.min.js" type="text/javascript"></script>
+    <script src="/assets/js/vuetify.min.js" type="text/javascript"></script>
+    <script src="/assets/js/axios.min.js" type="text/javascript"></script>
+    <script src="/assets/js/main.js" type="text/javascript"></script>
+    <script src="/assets/js/quill.min.js" type="text/javascript"></script>
+    <script src="/assets/js/vue-quill-editor.js" type="text/javascript"></script>
+    <script src="/assets/js/vuejs-paginate.min.js" type="text/javascript"></script>
+    <script src="/assets/js/vue-masonry-plugin-window.js"></script>
+    <script src="/assets/js/anime.min.js" type="text/javascript"></script>
+    <script src="/assets/js/Chart.min.js" type="text/javascript"></script>
+    <script src="/assets/js/vue-chartjs.min.js" type="text/javascript"></script>
+    <script src="/assets/js/dayjs.min.js"></script>
+    <script src="/assets/js/dayjs-locale-id.js"></script>
+    <script src="/assets/js/pusher.min.js"></script>
+
+    <script>
+        dayjs.locale('id');
+        dayjs().locale('id').format();
+
+        var pusherKey = '';
+        var channel = { bind: function() {} };
+        if (pusherKey) {
+            Pusher.logToConsole = false;
+            var pusher = new Pusher(pusherKey, { cluster: 'ap1' });
+            channel = pusher.subscribe('my-channel');
+        }
+    </script>
+
+    <script>
+        Vue.use(VueQuillEditor);
+        var VueMasonryPlugin = window["vue-masonry-plugin"].VueMasonryPlugin;
+        Vue.use(VueMasonryPlugin);
+        Vue.component('paginate', VuejsPaginate);
+
+        if (window.VueChartJs) {
+            // Shared Chart.js v2 look & feel (PLN palette, Roboto, subtle grid)
+            if (window.Chart && Chart.defaults && Chart.defaults.global) {
+                Chart.defaults.global.defaultFontFamily = "'Roboto', 'IBM Plex Sans', sans-serif";
+                Chart.defaults.global.defaultFontColor = '#64748B';
+                Chart.defaults.global.tooltips.backgroundColor = '#072440';
+                Chart.defaults.global.tooltips.titleFontStyle = '600';
+                Chart.defaults.global.tooltips.xPadding = 10;
+                Chart.defaults.global.tooltips.yPadding = 8;
+                Chart.defaults.global.tooltips.cornerRadius = 6;
+            }
+
+            Vue.component('bar-chart1', {
+                extends: VueChartJs.Bar,
+                props: ['chartHarian'],
+                watch: {
+                    chartHarian: {
+                        handler(val) {
+                            if (val && val.length) this.$nextTick(() => this.render());
+                        },
+                        immediate: true
+                    }
+                },
+                methods: {
+                    render() {
+                        // Backend index i => jam (i+1), index 23 => jam 00
+                        const labels = Array.from({ length: 24 }, (_, i) => String((i + 1) % 24).padStart(2, '0') + ':00');
+                        const data = (this.chartHarian || []).map(Number);
+                        const maxVal = Math.max(...data, 0);
+                        this.renderChart({
+                            labels,
+                            datasets: [{
+                                label: 'Reservasi dimulai',
+                                data,
+                                backgroundColor: data.map(v => v === maxVal && v > 0 ? '#FFD200' : 'rgba(0, 90, 156, 0.85)'),
+                                hoverBackgroundColor: data.map(v => v === maxVal && v > 0 ? '#F2C200' : '#005A9C'),
+                                borderWidth: 0,
+                                barPercentage: 0.75,
+                                categoryPercentage: 0.9
+                            }]
+                        }, {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            legend: { display: false },
+                            tooltips: {
+                                callbacks: {
+                                    title: (items) => 'Pukul ' + items[0].label + ' WIB',
+                                    label: (item) => ' ' + item.yLabel + ' reservasi'
+                                }
+                            },
+                            scales: {
+                                xAxes: [{
+                                    gridLines: { display: false },
+                                    ticks: { autoSkip: true, maxRotation: 0, maxTicksLimit: 12, fontSize: 11 }
+                                }],
+                                yAxes: [{
+                                    gridLines: { color: 'rgba(148, 163, 184, 0.18)', drawBorder: false, zeroLineColor: 'rgba(148,163,184,0.35)' },
+                                    ticks: { beginAtZero: true, maxTicksLimit: 6, precision: 0, fontSize: 11, padding: 8 }
+                                }]
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Komposisi status: doughnut (sesuai judul & ikon "chart-pie")
+            Vue.component('bar-chart', {
+                extends: VueChartJs.Doughnut,
+                props: ['chartJenis', 'chartJumlah'],
+                watch: {
+                    chartJenis: { handler() { this.$nextTick(() => this.render()); }, immediate: true },
+                    chartJumlah: { handler() { this.$nextTick(() => this.render()); }, immediate: true }
+                },
+                methods: {
+                    render() {
+                        if (!this.chartJenis || !this.chartJenis.length) return;
+                        if (!this.chartJumlah || !this.chartJumlah.length) return;
+                        const labelMap = { 'Baru': 'Menunggu', 'Disetujui': 'Disetujui', 'Ditolak': 'Ditolak' };
+                        const data = this.chartJumlah.map(Number);
+                        const total = data.reduce((a, b) => a + b, 0) || 1;
+
+                        this.renderChart({
+                            labels: this.chartJenis.map(l => labelMap[l] || l),
+                            datasets: [{
+                                data,
+                                backgroundColor: ['#D97706', '#16A34A', '#DC2626'],
+                                hoverBackgroundColor: ['#B45309', '#15803D', '#B91C1C'],
+                                borderColor: '#FFFFFF',
+                                borderWidth: 3
+                            }]
+                        }, {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutoutPercentage: 68,
+                            legend: {
+                                position: 'bottom',
+                                labels: { usePointStyle: true, padding: 16, fontSize: 12, fontColor: '#334155' }
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    label: (item, d) => {
+                                        const v = d.datasets[0].data[item.index];
+                                        return ' ' + d.labels[item.index] + ': ' + v + ' (' + (v / total * 100).toFixed(1) + '%)';
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+
+    <script>
+        var rawToken = localStorage.getItem('access_token');
+        var token = '';
+        try {
+            token = rawToken ? (rawToken.startsWith('"') ? JSON.parse(rawToken) : rawToken) : '';
+        } catch(e) {
+            token = rawToken || '';
+        }
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        }
+
+        var app = new Vue({
+            el: '#app',
+            vuetify: new Vuetify({
+                theme: {
+                    themes: {
+                        light: {
+                            primary: '#005A9C',
+                            secondary: '#072440',
+                            accent: '#FFD200',
+                            error: '#DC2626',
+                            info: '#0284C7',
+                            success: '#16A34A',
+                            warning: '#D97706',
+                        }
+                    }
+                }
+            }),
+            data: {
+                // Real-Time WebSocket Engine
+                isLiveConnected: false,
+                ws: null,
+                wsReconnectAttempts: 0,
+                wsReconnectTimer: null,
+                wsHeartbeatTimer: null,
+                isRefreshing: false,
+                lastSyncTime: new Date(),
+                syncStatusText: 'Tersimpan di Server · Baru Saja',
+
+                // Keamanan Akun / Ganti Kata Sandi
+                changePwdForm: {
+                    current_password: '',
+                    new_password: '',
+                    confirm_password: ''
+                },
+                showCurrentPwd: false,
+                showNewPwd: false,
+                showConfirmPwd: false,
+                changePwdLoading: false,
+
+                sidebarMenu: true,
+                toggleMini: false,
+                currentView: 'overview',
+                dashboardTab: 0,
+                loading: false,
+                analyticsLoading: false,
+                snackbar: false,
+                snackbarMessage: '',
+                snackbarColor: '',
+                snackbarIcon: '',
+                timeout: 4000,
+                currentLiveTime: '',
+                currentUser: null,
+                totalRuangan: 12,
+                countPending: 0,
+                countApproved: 0,
+                countRejected: 0,
+                chartHarian: [],
+                chartJenis: [],
+                chartJumlah: [],
+                analytics: {
+                    heatmap: { days: [], hours: [], matrix: [], max_value: 1 },
+                    rooms_utilization: [],
+                    insights: { busiest_day: '', peak_hour: '', top_room: '', avg_duration: '' }
+                },
+                // Approval Management State
+                approvalList: [],
+                approvalLoading: false,
+                approvalSearch: '',
+                approvalStatusFilter: 'all',
+                approvalRoomFilter: null,
+                roomList: [],
+                currentPage: 1,
+                itemsPerPage: 15,
+
+                // Room Master State
+                roomSearch: '',
+                roomDialog: false,
+                roomSubmitting: false,
+                roomForm: { room_id: null, room_nama: '', room_kapasitas: 20 },
+
+                // Slideshow Master State
+                slideshowList: [],
+                slideshowLoading: false,
+                slideDialog: false,
+                slideSubmitting: false,
+                slideFile: null,
+                slideForm: { slideshow_id: null, title_slide: '', deskripsi_slide: '', image_slide: '', status: 1 },
+
+                // Pages Master State
+                pagesList: [],
+                pagesLoading: false,
+                pageDialog: false,
+                pageSubmitting: false,
+                pageForm: { page_id: null, page_title: '', page_body: '', slug: '' },
+
+                // User Master State
+                userList: [],
+                groupList: [],
+                userLoading: false,
+                userSearch: '',
+                userDialog: false,
+                userSubmitting: false,
+                userForm: { user_id: null, nid: '', username: '', fullname: '', email: '', group_id: 2, password: '' },
+
+                // Settings State
+                settingsLoading: false,
+                settingsForm: {
+                    app_name: 'TDC PLN',
+                    company_name: 'PT PLN NPS',
+                    company_telp: '031-8548391',
+                    company_email: 'info@pln-npservices.com',
+                    company_address: 'Jl. Raya Bandara Juanda No. 17, Desa Semambung, Kec. Gedangan, Kabupaten Sidoarjo, Jawa Timur 61254',
+                    smtp_host: 'smtp.gmail.com',
+                    smtp_port: 587,
+                    smtp_user: '',
+                    smtp_password: '',
+                    smtp_from_email: 'tdc.reservasi@pln-npservices.com',
+                    smtp_from_name: 'Training Development Center (TDC) PT PLN NPS',
+                    smtp_use_tls: true,
+                    smtp_use_ssl: false
+                },
+                showSmtpPassword: false,
+                testEmailDialog: false,
+                testEmailTarget: 'theopinem05@gmail.com',
+                testEmailLoading: false,
+                testEmailMessage: '',
+                testEmailSuccess: null,
+                emailLogs: [],
+                emailLogsLoading: false,
+                smtpConfigStatus: null,
+
+                // Backup State
+                backupList: [],
+                backupLoading: false,
+                backingUp: false,
+
+                // Agenda Master State
+                agendaList: [],
+                agendaLoading: false,
+                agendaSearch: '',
+                agendaRoomFilter: '',
+                agendaStatusFilter: '',
+                agendaCurrentPage: 1,
+                agendaPerPage: 15,
+                agendaDialog: false,
+                agendaSubmitting: false,
+                agendaForm: {
+                    agenda_id: null,
+                    agenda_nama: '',
+                    agenda_tempat: '',
+                    tgl_agenda: '',
+                    tgl_agenda_selesai: '',
+                    waktu: '08:00',
+                    waktu_selesai: '17:00',
+                    agenda_pic_nama: '',
+                    agenda_pic_kontak: '',
+                    agenda_pic_email: '',
+                    agenda_detail: ''
+                }
+            },
+            computed: {
+                currentViewMeta() {
+                    const metaMap = {
+                        'overview': { title: 'Dashboard Eksekutif TDC', subtitle: 'Sistem Pemantauan Aset Ruangan, Jadwal Reservasi, & Analitik Kepadatan Pelatihan PT PLN NPS.', icon: 'mdi-view-dashboard' },
+                        'approvals': { title: 'Persetujuan Reservasi Ruangan', subtitle: 'Verifikasi, validasi jadwal bebas bentrok, dan persetujuan permohonan reservasi ruangan TDC.', icon: 'mdi-clipboard-check-outline' },
+                        'agenda': { title: 'Manajemen Agenda & Reservasi', subtitle: 'Kelola seluruh agenda kegiatan, jadwal pelatihan, dan status pelaksanaan di TDC.', icon: 'mdi-calendar-month' },
+                        'rooms': { title: 'Master Data Katalog Ruangan', subtitle: 'Kelola inventaris ruangan, kapasitas peserta, dan fasilitas pendukung diklat.', icon: 'mdi-office-building' },
+                        'slideshow': { title: 'Manajemen Slideshow Beranda', subtitle: 'Kelola gambar banner carousel, judul, dan urutan tampilan pada portal publik.', icon: 'mdi-image-multiple' },
+                        'pages': { title: 'Manajemen Konten Halaman Web', subtitle: 'Kelola artikel, informasi profil, dan halaman informasi publik.', icon: 'mdi-file-document-outline' },
+                        'users': { title: 'Manajemen Pengguna & Hak Akses', subtitle: 'Kelola akun administrator, pegawai, dan perizinan akses sistem.', icon: 'mdi-account-multiple' },
+                        'settings': { title: 'Pengaturan Sistem & Konfigurasi', subtitle: 'Kelola konfigurasi aplikasi, kontak instansi, dan integrasi notifikasi.', icon: 'mdi-cog' },
+                        'backup': { title: 'Backup & Pemulihan Basis Data', subtitle: 'Cadangkan dan unduh snapshot basis data SQLite TDC secara aman.', icon: 'mdi-database' }
+                    };
+                    return metaMap[this.currentView] || metaMap['overview'];
+                },
+                roomOptions() {
+                    const list = [{ text: 'Semua Ruangan', value: '' }];
+                    (this.roomList || []).forEach(r => {
+                        list.push({ text: r.room_nama, value: r.room_id });
+                    });
+                    return list;
+                },
+                groupOptions() {
+                    const list = [];
+                    (this.groupList || []).forEach(g => {
+                        list.push({ text: g.group_name, value: g.group_id });
+                    });
+                    if (list.length === 0) {
+                        list.push({ text: 'Administrator', value: 1 });
+                        list.push({ text: 'User', value: 2 });
+                    }
+                    return list;
+                },
+                filteredRoomList() {
+                    const q = (this.roomSearch || '').toLowerCase().trim();
+                    if (!q) return this.roomList || [];
+                    return (this.roomList || []).filter(r => (r.room_nama || '').toLowerCase().includes(q) || String(r.room_kapasitas).includes(q));
+                },
+                filteredUserList() {
+                    const q = (this.userSearch || '').toLowerCase().trim();
+                    if (!q) return this.userList || [];
+                    return (this.userList || []).filter(u =>
+                        (u.username || '').toLowerCase().includes(q) ||
+                        (u.fullname || '').toLowerCase().includes(q) ||
+                        (u.email || '').toLowerCase().includes(q) ||
+                        (u.group_name || '').toLowerCase().includes(q)
+                    );
+                },
+                filteredAgendaList() {
+                    const list = this.agendaList || [];
+                    const q = (this.agendaSearch || '').toLowerCase().trim();
+                    const rf = this.agendaRoomFilter;
+                    const sf = this.agendaStatusFilter;
+
+                    return list.filter(item => {
+                        let matchStatus = true;
+                        if (sf !== '') matchStatus = String(item.jenis_agenda) === String(sf);
+
+                        let matchRoom = true;
+                        if (rf) matchRoom = String(item.agenda_tempat) === String(rf) || (item.room_id && String(item.room_id) === String(rf));
+
+                        let matchSearch = true;
+                        if (q) {
+                            matchSearch = (item.agenda_kode || '').toLowerCase().includes(q) ||
+                                (item.agenda_nama || '').toLowerCase().includes(q) ||
+                                (item.agenda_pic_nama || '').toLowerCase().includes(q) ||
+                                (item.agenda_pic_email || '').toLowerCase().includes(q) ||
+                                (item.agenda_pic_kontak || '').toLowerCase().includes(q) ||
+                                (item.room_nama || item.agenda_tempat || '').toLowerCase().includes(q);
+                        }
+                        return matchStatus && matchRoom && matchSearch;
+                    });
+                },
+                paginatedAgendaList() {
+                    const start = (this.agendaCurrentPage - 1) * this.agendaPerPage;
+                    return this.filteredAgendaList.slice(start, start + this.agendaPerPage);
+                },
+                roomFilterItems() {
+                    const list = [{ text: 'Semua Ruangan', value: null }];
+                    (this.roomList || []).forEach(r => {
+                        list.push({ text: r.room_nama, value: r.room_id });
+                    });
+                    return list;
+                },
+                filteredApprovals() {
+                    const list = this.approvalList || [];
+                    const q = (this.approvalSearch || '').toLowerCase().trim();
+                    const statusF = this.approvalStatusFilter;
+                    const roomF = this.approvalRoomFilter;
+
+                    return list.filter(item => {
+                        // Filter Status
+                        let matchStatus = true;
+                        if (statusF === 'pending') matchStatus = (item.jenis_agenda === 0);
+                        else if (statusF === 'approved') matchStatus = (item.jenis_agenda === 1);
+                        else if (statusF === 'rejected') matchStatus = (item.jenis_agenda === 2);
+
+                        // Filter Ruangan
+                        let matchRoom = true;
+                        if (roomF) {
+                            matchRoom = String(item.agenda_tempat) === String(roomF) ||
+                                (item.room_id && String(item.room_id) === String(roomF));
+                        }
+
+                        // Search
+                        let matchSearch = true;
+                        if (q) {
+                            matchSearch = (item.agenda_kode || '').toLowerCase().includes(q) ||
+                                (item.agenda_nama || '').toLowerCase().includes(q) ||
+                                (item.agenda_pic_nama || '').toLowerCase().includes(q) ||
+                                (item.agenda_pic_email || '').toLowerCase().includes(q) ||
+                                (item.agenda_pic_nid || '').toLowerCase().includes(q) ||
+                                (item.agenda_pic_kontak || '').toLowerCase().includes(q) ||
+                                (item.agenda_tempat || '').toLowerCase().includes(q);
+                        }
+
+                        return matchStatus && matchRoom && matchSearch;
+                    })
+                    // Prioritaskan yang butuh tindakan (pending) di urutan teratas; urutan asli tetap dipertahankan (stable sort)
+                    .map((item, idx) => ({ item, idx }))
+                    .sort((a, b) => ((a.item.jenis_agenda === 0 ? 0 : 1) - (b.item.jenis_agenda === 0 ? 0 : 1)) || (a.idx - b.idx))
+                    .map(w => w.item);
+                },
+                paginatedApprovals() {
+                    const start = (this.currentPage - 1) * this.itemsPerPage;
+                    return this.filteredApprovals.slice(start, start + this.itemsPerPage);
+                },
+                approvalCounts() {
+                    const list = this.approvalList || [];
+                    return {
+                        pending: list.filter(a => a.jenis_agenda === 0).length,
+                        approved: list.filter(a => a.jenis_agenda === 1).length,
+                        rejected: list.filter(a => a.jenis_agenda === 2).length,
+                        total: list.length
+                    };
+                }
+            },
+            watch: {
+                // Kembali ke halaman 1 setiap filter berubah agar hasil tidak tampak kosong
+                approvalSearch() { this.currentPage = 1; },
+                approvalStatusFilter() { this.currentPage = 1; },
+                approvalRoomFilter() { this.currentPage = 1; },
+                agendaSearch() { this.agendaCurrentPage = 1; },
+                agendaStatusFilter() { this.agendaCurrentPage = 1; },
+                agendaRoomFilter() { this.agendaCurrentPage = 1; }
+            },
+            created() {
+                this.checkAdminAuth();
+            },
+            mounted() {
+                this.updateLiveTime();
+                setInterval(() => this.updateLiveTime(), 1000);
+
+                // Initial data preload
+                this.loadRooms();
+                this.loadAdminApprovals();
+                this.getDashboard();
+                this.getAnalytics();
+
+                // Start Real-Time WebSocket connection
+                this.initRealtime();
+
+                // Auto-route from URL hash
+                const rawHash = (window.location.hash || '').replace('#', '').trim().toLowerCase();
+                const validViews = ['overview', 'approvals', 'agenda', 'rooms', 'ruangan', 'slideshow', 'pages', 'users', 'user', 'settings', 'backup'];
+                let targetView = 'overview';
+                if (validViews.includes(rawHash)) {
+                    if (rawHash === 'ruangan') targetView = 'rooms';
+                    else if (rawHash === 'user') targetView = 'users';
+                    else targetView = rawHash;
+                }
+                this.setView(targetView, true);
+
+                setTimeout(() => {
+                    if (typeof window.hidePreloader === 'function') window.hidePreloader();
+                }, 350);
+            },
+            methods: {
+                setView(viewName, force = false) {
+                    if (!force && this.currentView === viewName) {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        return;
+                    }
+                    this.currentView = viewName;
+                    const viewMap = ['overview', 'approvals', 'agenda', 'rooms', 'slideshow', 'pages', 'users', 'settings', 'backup'];
+                    this.dashboardTab = Math.max(0, viewMap.indexOf(viewName));
+
+                    if (viewName !== 'overview') {
+                        window.location.hash = viewName;
+                    } else {
+                        if (window.location.hash) {
+                            history.replaceState(null, null, window.location.pathname);
+                        }
+                    }
+
+                    window.scrollTo({ top: 0, behavior: 'auto' });
+
+                    // Lazy load corresponding data
+                    if (viewName === 'overview') {
+                        this.getDashboard();
+                        this.getAnalytics();
+                    } else if (viewName === 'approvals') {
+                        this.loadAdminApprovals();
+                    } else if (viewName === 'agenda') {
+                        this.loadAgendaData();
+                    } else if (viewName === 'rooms') {
+                        this.loadRooms();
+                    } else if (viewName === 'slideshow') {
+                        this.loadSlideshows();
+                    } else if (viewName === 'pages') {
+                        this.loadPages();
+                    } else if (viewName === 'users') {
+                        this.loadUsers();
+                        this.loadGroups();
+                    } else if (viewName === 'settings') {
+                        this.loadSettings();
+                    } else if (viewName === 'backup') {
+                        this.loadBackups();
+                    }
+                },
+                goToPublicPortal() {
+                    if (typeof window.showPreloader === 'function') {
+                        window.showPreloader(() => {
+                            window.location.href = '/';
+                        }, false);
+                    } else {
+                        window.location.href = '/';
+                    }
+                },
+                doLogout() {
+                    const executeLogout = () => {
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('user');
+                        document.cookie = 'access_token=; Max-Age=0; path=/';
+                        delete axios.defaults.headers.common['Authorization'];
+                        axios.get('/auth/logout').finally(() => {
+                            window.location.href = '/';
+                        });
+                    };
+                    if (typeof window.showPreloader === 'function') {
+                        window.showPreloader(executeLogout, false);
+                    } else {
+                        executeLogout();
+                    }
+                },
+                setDashboardTab(idx) {
+                    if (typeof idx === 'string') {
+                        this.setView(idx);
+                        return;
+                    }
+                    const viewMap = ['overview', 'approvals', 'agenda', 'rooms', 'slideshow', 'pages', 'users', 'settings', 'backup'];
+                    this.setView(viewMap[idx] || 'overview');
+                },
+
+                // --- ROOM MANAGEMENT METHODS ---
+                openRoomDialog(item) {
+                    if (item) {
+                        this.roomForm = { room_id: item.room_id, room_nama: item.room_nama, room_kapasitas: item.room_kapasitas };
+                    } else {
+                        this.roomForm = { room_id: null, room_nama: '', room_kapasitas: 25 };
+                    }
+                    this.roomDialog = true;
+                },
+                saveRoomForm() {
+                    if (!this.roomForm.room_nama || !this.roomForm.room_kapasitas) {
+                        this.showNotification('Harap lengkapi nama ruangan dan kapasitas.', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+                    this.roomSubmitting = true;
+                    const isEdit = !!this.roomForm.room_id;
+                    const url = isEdit ? ('/api/room/update/' + this.roomForm.room_id) : '/api/room/save';
+                    const req = isEdit ? axios.put(url, this.roomForm) : axios.post(url, this.roomForm);
+
+                    req.then(res => {
+                        this.roomSubmitting = false;
+                        if (res.data && res.data.status === false) {
+                            this.showNotification('Gagal menyimpan ruangan: ' + (res.data.message || ''), '#DC2626', 'mdi-alert');
+                            return;
+                        }
+                        this.roomDialog = false;
+                        this.showNotification(isEdit ? 'Data ruangan berhasil diperbarui' : 'Ruangan baru berhasil ditambahkan', '#16A34A', 'mdi-check-circle');
+                        this.loadRooms();
+                        this.getDashboard();
+                    }).catch(err => {
+                        this.roomSubmitting = false;
+                        this.showNotification('Gagal menyimpan ruangan: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                    });
+                },
+                deleteRoom(item) {
+                    if (!confirm("Hapus ruangan '" + item.room_nama + "'?")) return;
+                    axios.delete('/api/room/delete/' + item.room_id)
+                        .then(() => {
+                            this.showNotification("Ruangan '" + item.room_nama + "' berhasil dihapus", '#16A34A', 'mdi-check-circle');
+                            this.loadRooms();
+                        })
+                        .catch(err => {
+                            this.showNotification('Gagal menghapus ruangan: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                        });
+                },
+
+                // --- SLIDESHOW METHODS ---
+                loadSlideshows() {
+                    this.slideshowLoading = true;
+                    axios.get('/api/slideshow').then(res => {
+                        this.slideshowLoading = false;
+                        if (res.data.status) this.slideshowList = res.data.data || [];
+                    }).catch(() => { this.slideshowLoading = false; });
+                },
+                openSlideDialog() {
+                    this.slideForm = { slideshow_id: null, title_slide: '', deskripsi_slide: '', image_slide: '', status: 1 };
+                    this.slideFile = null;
+                    this.slideDialog = true;
+                },
+                saveSlideForm() {
+                    if (!this.slideFile) {
+                        this.showNotification('Silakan pilih berkas gambar slide terlebih dahulu.', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+                    this.slideSubmitting = true;
+                    const fd = new FormData();
+                    fd.append('image', this.slideFile);
+
+                    axios.post('/api/slideshow/upload', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+                        .then(res => {
+                            const filename = res.data.data?.filename;
+                            return axios.post('/api/slideshow/save', {
+                                title_slide: this.slideForm.title_slide || 'Banner TDC',
+                                deskripsi_slide: this.slideForm.deskripsi_slide || '',
+                                image_slide: 'images/carousels/' + filename,
+                                status: 1
+                            });
+                        })
+                        .then(() => {
+                            this.slideSubmitting = false;
+                            this.slideDialog = false;
+                            this.showNotification('Slide baru berhasil diunggah & disimpan', '#16A34A', 'mdi-check-circle');
+                            this.loadSlideshows();
+                        })
+                        .catch(err => {
+                            this.slideSubmitting = false;
+                            this.showNotification('Gagal mengunggah slide: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                        });
+                },
+                toggleSlideStatus(s) {
+                    axios.put('/api/slideshow/setaktif/' + s.slideshow_id).then(() => {
+                        this.loadSlideshows();
+                    });
+                },
+                deleteSlide(s) {
+                    if (!confirm("Hapus slide ini?")) return;
+                    axios.delete('/api/slideshow/delete/' + s.slideshow_id).then(() => {
+                        this.showNotification('Slide berhasil dihapus', '#16A34A', 'mdi-check-circle');
+                        this.loadSlideshows();
+                    });
+                },
+
+                // --- PAGES METHODS ---
+                loadPages() {
+                    this.pagesLoading = true;
+                    axios.get('/api/pages').then(res => {
+                        this.pagesLoading = false;
+                        if (res.data.status) this.pagesList = res.data.data || [];
+                    }).catch(() => { this.pagesLoading = false; });
+                },
+                openPageDialog(p) {
+                    this.pageForm = { page_id: p.page_id, page_title: p.page_title, page_body: p.page_body, slug: p.slug };
+                    this.pageDialog = true;
+                },
+                savePageForm() {
+                    this.pageSubmitting = true;
+                    axios.put('/api/page/update/' + this.pageForm.page_id, this.pageForm)
+                        .then(() => {
+                            this.pageSubmitting = false;
+                            this.pageDialog = false;
+                            this.showNotification('Konten halaman berhasil diperbarui', '#16A34A', 'mdi-check-circle');
+                            this.loadPages();
+                        })
+                        .catch(err => {
+                            this.pageSubmitting = false;
+                            this.showNotification('Gagal memperbarui halaman: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                        });
+                },
+
+                // --- USER MANAGEMENT METHODS ---
+                loadUsers() {
+                    this.userLoading = true;
+                    axios.get('/api/user').then(res => {
+                        this.userLoading = false;
+                        if (res.data.status) this.userList = res.data.data || [];
+                    }).catch(() => { this.userLoading = false; });
+                },
+                loadGroups() {
+                    axios.get('/api/group').then(res => {
+                        if (res.data.status) this.groupList = res.data.data || [];
+                    });
+                },
+                openUserDialog(item) {
+                    if (item) {
+                        this.userForm = {
+                            user_id: item.user_id,
+                            nid: item.nid || item.username,
+                            username: item.username,
+                            fullname: item.fullname,
+                            email: item.email,
+                            group_id: item.group_id || (item.user_type === 1 ? 1 : 2),
+                            password: ''
+                        };
+                    } else {
+                        this.userForm = {
+                            user_id: null,
+                            nid: '',
+                            username: '',
+                            fullname: '',
+                            email: '',
+                            group_id: 2,
+                            password: ''
+                        };
+                    }
+                    this.userDialog = true;
+                },
+                saveUserForm() {
+                    if (!this.userForm.username || !this.userForm.fullname || !this.userForm.email) {
+                        this.showNotification('Harap lengkapi semua data wajib pengguna.', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+                    this.userSubmitting = true;
+                    const isEdit = !!this.userForm.user_id;
+                    const url = isEdit ? ('/api/user/update/' + this.userForm.user_id) : '/api/user/save';
+                    const req = isEdit ? axios.put(url, this.userForm) : axios.post(url, this.userForm);
+
+                    req.then(res => {
+                        this.userSubmitting = false;
+                        if (res.data && res.data.status === false) {
+                            this.showNotification('Gagal menyimpan pengguna: ' + (res.data.message || ''), '#DC2626', 'mdi-alert');
+                            return;
+                        }
+                        this.userDialog = false;
+                        this.showNotification(isEdit ? 'Akun pengguna berhasil diperbarui' : 'Pengguna baru berhasil ditambahkan', '#16A34A', 'mdi-check-circle');
+                        this.loadUsers();
+                    }).catch(err => {
+                        this.userSubmitting = false;
+                        this.showNotification('Gagal menyimpan pengguna: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                    });
+                },
+                deleteUser(u) {
+                    if (!confirm("Hapus pengguna '" + (u.fullname || u.username) + "'?")) return;
+                    axios.delete('/api/user/delete/' + u.user_id)
+                        .then(() => {
+                            this.showNotification('Pengguna berhasil dihapus', '#16A34A', 'mdi-check-circle');
+                            this.loadUsers();
+                        })
+                        .catch(err => {
+                            this.showNotification('Gagal menghapus pengguna: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                        });
+                },
+
+                // --- SETTINGS METHODS ---
+                applySmtpPreset(preset) {
+                    if (preset === 'gmail') {
+                        this.settingsForm.smtp_host = 'smtp.gmail.com';
+                        this.settingsForm.smtp_port = 587;
+                        this.settingsForm.smtp_use_tls = true;
+                        this.settingsForm.smtp_use_ssl = false;
+                        if (!this.settingsForm.smtp_from_email || this.settingsForm.smtp_from_email.includes('localhost')) {
+                            this.settingsForm.smtp_from_email = this.settingsForm.smtp_user || 'tdc.reservasi@pln-npservices.com';
+                        }
+                    } else if (preset === 'local') {
+                        this.settingsForm.smtp_host = 'localhost';
+                        this.settingsForm.smtp_port = 587;
+                        this.settingsForm.smtp_use_tls = false;
+                        this.settingsForm.smtp_use_ssl = false;
+                    }
+                },
+                loadSettings() {
+                    this.settingsLoading = true;
+                    axios.get('/api/settings').then(res => {
+                        this.settingsLoading = false;
+                        if (res.data.status && res.data.data) {
+                            this.settingsForm = { ...this.settingsForm, ...res.data.data };
+                        }
+                        this.loadEmailLogs();
+                    }).catch(() => { this.settingsLoading = false; });
+                },
+                saveSettingsForm() {
+                    this.settingsLoading = true;
+                    axios.post('/api/settings/save', this.settingsForm)
+                        .then(() => {
+                            this.settingsLoading = false;
+                            this.showNotification('Pengaturan sistem dan integrasi SMTP berhasil disimpan', '#16A34A', 'mdi-check-circle');
+                            this.loadEmailLogs();
+                        })
+                        .catch(err => {
+                            this.settingsLoading = false;
+                            this.showNotification('Gagal menyimpan pengaturan: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                        });
+                },
+                submitDashboardChangePassword() {
+                    if (!this.changePwdForm.current_password) {
+                        this.showNotification('Kata sandi saat ini wajib diisi.', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+                    if (!this.changePwdForm.new_password || this.changePwdForm.new_password.length < 6) {
+                        this.showNotification('Kata sandi baru minimal 6 karakter.', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+                    if (this.changePwdForm.new_password !== this.changePwdForm.confirm_password) {
+                        this.showNotification('Konfirmasi kata sandi baru tidak cocok.', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+                    if (this.changePwdForm.current_password === this.changePwdForm.new_password) {
+                        this.showNotification('Kata sandi baru tidak boleh sama dengan kata sandi saat ini.', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+
+                    this.changePwdLoading = true;
+                    axios.post('/api/auth/change-password', this.changePwdForm)
+                        .then(res => {
+                            this.changePwdLoading = false;
+                            if (res.data.status) {
+                                this.showNotification(res.data.message || 'Kata sandi akun berhasil diperbarui.', '#16A34A', 'mdi-check-decagram');
+                                this.changePwdForm = {
+                                    current_password: '',
+                                    new_password: '',
+                                    confirm_password: ''
+                                };
+                                this.showCurrentPwd = false;
+                                this.showNewPwd = false;
+                                this.showConfirmPwd = false;
+                            } else {
+                                this.showNotification(res.data.message || 'Gagal mengubah kata sandi.', '#DC2626', 'mdi-alert');
+                            }
+                        })
+                        .catch(err => {
+                            this.changePwdLoading = false;
+                            const msg = (err.response && err.response.data && err.response.data.detail) 
+                                ? err.response.data.detail 
+                                : ((err.response && err.response.data && err.response.data.message) ? err.response.data.message : 'Gagal memperbarui kata sandi.');
+                            this.showNotification(msg, '#DC2626', 'mdi-alert');
+                        });
+                },
+                loadEmailLogs() {
+                    this.emailLogsLoading = true;
+                    axios.get('/api/settings/email-status').then(res => {
+                        this.emailLogsLoading = false;
+                        if (res.data.status) {
+                            this.emailLogs = res.data.logs || [];
+                            this.smtpConfigStatus = res.data.config || null;
+                        }
+                    }).catch(() => { this.emailLogsLoading = false; });
+                },
+                openTestEmailDialog() {
+                    this.testEmailTarget = this.settingsForm.smtp_user || (this.currentUser && this.currentUser.email) || 'theopinem05@gmail.com';
+                    this.testEmailMessage = '';
+                    this.testEmailSuccess = null;
+                    this.testEmailDialog = true;
+                },
+                sendTestEmail() {
+                    if (!this.testEmailTarget) {
+                        this.showNotification('Masukkan alamat email tujuan pengujian', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+                    this.testEmailLoading = true;
+                    this.testEmailMessage = '';
+                    this.testEmailSuccess = null;
+                    axios.post('/api/settings/test-email', {
+                        to_email: this.testEmailTarget,
+                        host: this.settingsForm.smtp_host,
+                        port: parseInt(this.settingsForm.smtp_port) || 587,
+                        user: this.settingsForm.smtp_user,
+                        password: this.settingsForm.smtp_password,
+                        use_tls: !!this.settingsForm.smtp_use_tls,
+                        use_ssl: !!this.settingsForm.smtp_use_ssl,
+                        from_email: this.settingsForm.smtp_from_email,
+                        from_name: this.settingsForm.smtp_from_name
+                    }).then(res => {
+                        this.testEmailLoading = false;
+                        this.testEmailSuccess = res.data.status;
+                        this.testEmailMessage = res.data.message;
+                        if (res.data.status) {
+                            this.showNotification('Email uji coba berhasil terkirim!', '#16A34A', 'mdi-check-circle');
+                        } else {
+                            this.showNotification('Uji coba email gagal', '#DC2626', 'mdi-alert');
+                        }
+                        this.loadEmailLogs();
+                    }).catch(err => {
+                        this.testEmailLoading = false;
+                        this.testEmailSuccess = false;
+                        this.testEmailMessage = err.response?.data?.message || err.message;
+                        this.showNotification('Error pengiriman email: ' + this.testEmailMessage, '#DC2626', 'mdi-alert');
+                        this.loadEmailLogs();
+                    });
+                },
+
+                // --- BACKUP METHODS ---
+                loadBackups() {
+                    this.backupLoading = true;
+                    axios.get('/api/backup').then(res => {
+                        this.backupLoading = false;
+                        if (res.data.status) this.backupList = res.data.data || [];
+                    }).catch(() => { this.backupLoading = false; });
+                },
+                createBackupNow() {
+                    this.backingUp = true;
+                    axios.post('/api/backup/create')
+                        .then(res => {
+                            this.backingUp = false;
+                            this.showNotification('Cadangan basis data berhasil dibuat: ' + (res.data.data?.file_name || ''), '#16A34A', 'mdi-check-circle');
+                            this.loadBackups();
+                        })
+                        .catch(err => {
+                            this.backingUp = false;
+                            this.showNotification('Gagal membuat cadangan database: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                        });
+                },
+
+                // --- AGENDA MANAGEMENT METHODS ---
+                loadAgendaData(silent = false) {
+                    if (silent !== true) this.agendaLoading = true;
+                    axios.get('/api/agenda').then(res => {
+                        this.agendaLoading = false;
+                        if (res.data.status) this.agendaList = res.data.data || [];
+                    }).catch(() => { this.agendaLoading = false; });
+                },
+                openAgendaDialog(item) {
+                    if (item) {
+                        this.agendaForm = {
+                            agenda_id: item.agenda_id || item.id,
+                            agenda_nama: item.agenda_nama,
+                            agenda_tempat: item.agenda_tempat,
+                            tgl_agenda: item.tgl_agenda,
+                            tgl_agenda_selesai: item.tgl_agenda_selesai || item.tgl_agenda,
+                            waktu: item.waktu || '08:00',
+                            waktu_selesai: item.waktu_selesai || '17:00',
+                            agenda_pic_nama: item.agenda_pic_nama,
+                            agenda_pic_kontak: item.agenda_pic_kontak,
+                            agenda_pic_email: item.agenda_pic_email || '',
+                            agenda_detail: item.agenda_detail || ''
+                        };
+                    } else {
+                        const today = new Date().toISOString().split('T')[0];
+                        this.agendaForm = {
+                            agenda_id: null,
+                            agenda_nama: '',
+                            agenda_tempat: (this.roomList[0] && this.roomList[0].room_id) || '',
+                            tgl_agenda: today,
+                            tgl_agenda_selesai: today,
+                            waktu: '08:00',
+                            waktu_selesai: '17:00',
+                            agenda_pic_nama: (this.currentUser && this.currentUser.fullname) || '',
+                            agenda_pic_kontak: '',
+                            agenda_pic_email: (this.currentUser && this.currentUser.email) || '',
+                            agenda_detail: ''
+                        };
+                    }
+                    this.agendaDialog = true;
+                },
+                saveAgendaForm() {
+                    if (!this.agendaForm.agenda_nama || !this.agendaForm.agenda_tempat || !this.agendaForm.tgl_agenda || !this.agendaForm.agenda_pic_nama) {
+                        this.showNotification('Harap lengkapi nama kegiatan, ruangan, tanggal, dan PIC.', '#DC2626', 'mdi-alert');
+                        return;
+                    }
+                    this.agendaSubmitting = true;
+                    const isEdit = !!this.agendaForm.agenda_id;
+                    const payload = {
+                        ...this.agendaForm,
+                        tgl_selesai: this.agendaForm.tgl_agenda_selesai || this.agendaForm.tgl_agenda,
+                        agenda_pic_email: this.agendaForm.agenda_pic_email || (this.currentUser && this.currentUser.email) || 'info@pln-npservices.com'
+                    };
+                    const url = isEdit ? ('/api/agenda/update/' + this.agendaForm.agenda_id) : '/api/agenda/save';
+                    const req = isEdit ? axios.put(url, payload) : axios.post(url, payload);
+
+                    req.then(res => {
+                        this.agendaSubmitting = false;
+                        if (res.data && res.data.status === false) {
+                            this.showNotification('Gagal menyimpan agenda: ' + (res.data.message || ''), '#DC2626', 'mdi-alert');
+                            return;
+                        }
+                        this.agendaDialog = false;
+                        this.showNotification(isEdit ? 'Agenda berhasil diperbarui' : 'Agenda baru berhasil disimpan', '#16A34A', 'mdi-check-circle');
+                        this.loadAgendaData();
+                        this.loadAdminApprovals();
+                        this.getDashboard();
+                        this.getAnalytics();
+                    }).catch(err => {
+                        this.agendaSubmitting = false;
+                        this.showNotification('Gagal menyimpan agenda: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                    });
+                },
+                deleteAgenda(item) {
+                    if (!confirm("Hapus agenda '" + item.agenda_nama + "'?")) return;
+                    axios.delete('/api/agenda/delete/' + (item.agenda_id || item.id))
+                        .then(() => {
+                            this.showNotification("Agenda '" + item.agenda_nama + "' berhasil dihapus", '#16A34A', 'mdi-check-circle');
+                            this.loadAgendaData();
+                            this.loadAdminApprovals();
+                            this.getDashboard();
+                            this.getAnalytics();
+                        })
+                        .catch(err => {
+                            this.showNotification('Gagal menghapus agenda: ' + (err.response?.data?.message || err.message), '#DC2626', 'mdi-alert');
+                        });
+                },
+                exportExcelReport() {
+                    this.showNotification('Menyiapkan berkas ekspor Excel...', '#005A9C', 'mdi-file-excel');
+                    axios.post('/api/excel/exporttoexcel', {})
+                        .then(res => {
+                            if (res.data.status && res.data.data?.url) {
+                                window.open(res.data.data.url, '_blank');
+                            }
+                        })
+                        .catch(() => {
+                            this.showNotification('Gagal mengekspor laporan excel', '#DC2626', 'mdi-alert');
+                        });
+                },
+                showNotification(msg, color, icon) {
+                    this.snackbarMessage = msg;
+                    this.snackbarColor = color || '#072440';
+                    this.snackbarIcon = icon || 'mdi-information';
+                    this.snackbar = true;
+                },
+                toggleSidebar() {
+                    this.toggleMini = !this.toggleMini;
+                },
+                updateLiveTime() {
+                    const now = new Date();
+                    const options = {
+                        timeZone: 'Asia/Jakarta',
+                        weekday: 'short',
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    };
+                    this.currentLiveTime = now.toLocaleString('id-ID', options) + ' WIB';
+                    this.updateSyncStatusText();
+                },
+                updateSyncStatusText() {
+                    if (this.isRefreshing) return;
+                    if (!this.lastSyncTime) {
+                        this.syncStatusText = 'Tersimpan di Server · Baru Saja';
+                        return;
+                    }
+                    const diffSec = Math.floor((new Date() - this.lastSyncTime) / 1000);
+                    if (diffSec < 60) {
+                        this.syncStatusText = 'Tersimpan di Server · Baru Saja';
+                    } else if (diffSec < 3600) {
+                        const m = Math.floor(diffSec / 60);
+                        this.syncStatusText = 'Tersimpan di Server · ' + m + ' Menit Lalu';
+                    } else {
+                        const h = Math.floor(diffSec / 3600);
+                        this.syncStatusText = 'Tersimpan di Server · ' + h + ' Jam Lalu';
+                    }
+                },
+                manualRefresh() {
+                    if (this.isRefreshing) return;
+                    this.isRefreshing = true;
+                    this.syncStatusText = 'Menyinkronkan...';
+
+                    // Segarkan metrik analitik dan persetujuan
+                    this.refreshAllData();
+
+                    // Segarkan tab aktif saat ini
+                    const v = this.currentView;
+                    if (v === 'agenda') this.loadAgendaData();
+                    else if (v === 'rooms') this.loadRooms();
+                    else if (v === 'slideshow') this.loadSlideshows();
+                    else if (v === 'pages') this.loadPages();
+                    else if (v === 'users') { this.loadUsers(); this.loadGroups(); }
+                    else if (v === 'settings') this.loadSettings();
+                    else if (v === 'backup') this.loadBackups();
+
+                    setTimeout(() => {
+                        this.isRefreshing = false;
+                        this.lastSyncTime = new Date();
+                        this.syncStatusText = 'Tersimpan di Server · Baru Saja';
+                        this.showNotification('Data server berhasil disegarkan.', '#005A9C', 'mdi-server-network');
+                    }, 500);
+                },
+                formatNumber(number) {
+                    return new Intl.NumberFormat('id-ID').format(number || 0);
+                },
+                formatDate(dateStr) {
+                    if (!dateStr) return '-';
+                    try {
+                        const opt = { day: '2-digit', month: 'long', year: 'numeric' };
+                        return new Date(dateStr).toLocaleDateString('id-ID', opt);
+                    } catch (e) {
+                        return dateStr;
+                    }
+                },
+                cleanPhone(phone) {
+                    if (!phone) return '';
+                    let p = String(phone).replace(/[^0-9]/g, '');
+                    if (p.startsWith('0')) p = '62' + p.substring(1);
+                    return p;
+                },
+                checkAdminAuth() {
+                    let t = localStorage.getItem('access_token');
+                    if (!t) {
+                        const match = document.cookie.match(/(?:^|;\s*)access_token=([^;]+)/);
+                        if (match) {
+                            t = match[1];
+                            localStorage.setItem('access_token', t);
+                        }
+                    }
+                    if (!t) {
+                        window.location.href = '/?auth=login&redirect=/dashboard';
+                        return;
+                    }
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + t;
+                    axios.get('/api/auth/me', {
+                        headers: { 'Authorization': 'Bearer ' + t }
+                    })
+                    .then(res => {
+                        if (res.data.status && res.data.data) {
+                            const u = res.data.data;
+                            const isAdm = (u.username === 'admin') || (u.user_type === 1) ||
+                                (u.group && u.group.toLowerCase().includes('admin'));
+                            if (!isAdm) {
+                                alert('Akses Ditolak! Dashboard App hanya dapat diakses oleh Administrator TDC.');
+                                window.location.href = '/';
+                                return;
+                            }
+                            this.currentUser = u;
+                        } else {
+                            window.location.href = '/?auth=login&redirect=/dashboard';
+                        }
+                    })
+                    .catch(() => {
+                        window.location.href = '/?auth=login&redirect=/dashboard';
+                    });
+                },
+                refreshAllData() {
+                    this.getDashboard();
+                    this.getAnalytics();
+                    this.loadAdminApprovals();
+                },
+                getDashboard(silent = false) {
+                    if (silent !== true) this.loading = true;
+                    axios.get('/api/dashboard')
+                        .then(res => {
+                            this.loading = false;
+                            if (res.data.status && res.data.data) {
+                                const d = res.data.data;
+                                this.totalRuangan = d.total_ruangan || 12;
+                                this.countPending = d.countPending || 0;
+                                this.countApproved = d.countApproved || 0;
+                                this.countRejected = d.countRejected || 0;
+                                this.chartHarian = d.cHarian || [];
+                                this.chartJenis = d.cjJenis || [];
+                                this.chartJumlah = d.cjJumlah || [];
+                            }
+                        })
+                        .catch(() => { this.loading = false; });
+                },
+                getAnalytics(silent = false) {
+                    if (silent !== true) this.analyticsLoading = true;
+                    axios.get('/api/dashboard/analytics')
+                        .then(res => {
+                            this.analyticsLoading = false;
+                            if (res.data.status && res.data.data) {
+                                this.analytics = res.data.data;
+                            }
+                        })
+                        .catch(() => { this.analyticsLoading = false; });
+                },
+                loadRooms() {
+                    axios.get('/api/home/room')
+                        .then(res => {
+                            if (res.data.status) {
+                                this.roomList = res.data.data || [];
+                            }
+                        })
+                        .catch(() => {});
+                },
+                loadAdminApprovals(silent = false) {
+                    if (silent !== true) this.approvalLoading = true;
+                    axios.get('/api/agenda?limit=1000')
+                        .then(res => {
+                            this.approvalLoading = false;
+                            if (res.data.status) {
+                                this.approvalList = (res.data.data || []).map(item => ({
+                                    ...item,
+                                    loadingApprove: false,
+                                    loadingReject: false
+                                }));
+                                this.countPending = this.approvalCounts.pending;
+                                this.countApproved = this.approvalCounts.approved;
+                                this.countRejected = this.approvalCounts.rejected;
+                            }
+                        })
+                        .catch(() => { this.approvalLoading = false; });
+                },
+
+                // --- REAL-TIME WEBSOCKET INTEGRATION ---
+                initRealtime() {
+                    if (this.ws) {
+                        try { this.ws.close(); } catch(e) {}
+                    }
+                    const loc = window.location;
+                    const wsProto = loc.protocol === 'https:' ? 'wss:' : 'ws:';
+                    const wsUrl = `${wsProto}//${loc.host}/ws`;
+
+                    try {
+                        this.ws = new WebSocket(wsUrl);
+                    } catch (err) {
+                        this.isLiveConnected = false;
+                        this.scheduleWsReconnect();
+                        return;
+                    }
+
+                    this.ws.onopen = () => {
+                        this.isLiveConnected = true;
+                        this.wsReconnectAttempts = 0;
+                        this.startWsHeartbeat();
+                    };
+
+                    this.ws.onmessage = (event) => {
+                        try {
+                            const msg = JSON.parse(event.data);
+                            this.handleRealtimeEvent(msg);
+                        } catch (e) {}
+                    };
+
+                    this.ws.onclose = () => {
+                        this.isLiveConnected = false;
+                        this.stopWsHeartbeat();
+                        this.scheduleWsReconnect();
+                    };
+
+                    this.ws.onerror = () => {
+                        this.isLiveConnected = false;
+                    };
+                },
+                scheduleWsReconnect() {
+                    if (this.wsReconnectTimer) clearTimeout(this.wsReconnectTimer);
+                    const delay = Math.min(1000 * Math.pow(1.5, this.wsReconnectAttempts || 0), 10000);
+                    this.wsReconnectAttempts = (this.wsReconnectAttempts || 0) + 1;
+                    this.wsReconnectTimer = setTimeout(() => {
+                        this.initRealtime();
+                    }, delay);
+                },
+                startWsHeartbeat() {
+                    this.stopWsHeartbeat();
+                    this.wsHeartbeatTimer = setInterval(() => {
+                        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                            this.ws.send('ping');
+                        }
+                    }, 25000);
+                },
+                stopWsHeartbeat() {
+                    if (this.wsHeartbeatTimer) clearInterval(this.wsHeartbeatTimer);
+                },
+                handleRealtimeEvent(msg) {
+                    if (!msg || !msg.event) return;
+                    const evt = msg.event;
+                    const data = msg.data || {};
+
+                    this.lastSyncTime = new Date();
+                    this.syncStatusText = 'Tersimpan di Server · Baru Saja';
+
+                    if (evt === 'reservation_created') {
+                        this.snackbar = true;
+                        this.snackbarColor = '#005A9C';
+                        this.snackbarIcon = 'mdi-bell-ring';
+                        this.snackbarMessage = `Pengajuan baru: "${data.agenda_nama || 'Reservasi'}" (${data.agenda_kode || ''}) masuk secara real-time!`;
+                        this.loadAdminApprovals(true);
+                        this.loadAgendaData(true);
+                        this.getDashboard(true);
+                        this.getAnalytics(true);
+                    } else if (evt === 'reservation_approved') {
+                        this.loadAdminApprovals(true);
+                        this.loadAgendaData(true);
+                        this.getDashboard(true);
+                        this.getAnalytics(true);
+                    } else if (evt === 'reservation_rejected') {
+                        this.loadAdminApprovals(true);
+                        this.loadAgendaData(true);
+                        this.getDashboard(true);
+                        this.getAnalytics(true);
+                    } else if (evt === 'agenda_updated') {
+                        this.loadAgendaData(true);
+                        this.loadAdminApprovals(true);
+                        this.getDashboard(true);
+                        this.getAnalytics(true);
+                    } else if (evt === 'rooms_updated') {
+                        this.loadRooms();
+                        this.getDashboard(true);
+                        this.getAnalytics(true);
+                    } else if (evt === 'slideshow_updated') {
+                        this.loadSlideshows();
+                    } else if (evt === 'users_updated') {
+                        this.loadUsers();
+                    } else if (evt === 'backup_updated') {
+                        this.loadBackups();
+                    } else if (evt === 'settings_updated') {
+                        this.loadSettings();
+                    }
+                },
+                confirmApprove(item) {
+                    this.$set(item, 'loadingApprove', true);
+                    axios.put('/api/agenda/setapprove/' + item.agenda_id)
+                        .then(res => {
+                            this.$set(item, 'loadingApprove', false);
+                            if (res.data.status) {
+                                this.snackbar = true;
+                                this.snackbarColor = '#16A34A';
+                                this.snackbarIcon = 'mdi-check-decagram';
+                                this.snackbarMessage = "Reservasi '" + item.agenda_nama + "' (" + item.agenda_kode + ") berhasil disetujui & email konfirmasi terkirim!";
+                                this.loadAdminApprovals();
+                                this.getDashboard();
+                                this.getAnalytics();
+                            } else {
+                                this.snackbar = true;
+                                this.snackbarColor = '#DC2626';
+                                this.snackbarIcon = 'mdi-alert';
+                                this.snackbarMessage = res.data.message || 'Gagal menyetujui reservasi.';
+                            }
+                        })
+                        .catch(err => {
+                            this.$set(item, 'loadingApprove', false);
+                            const msg = (err.response && err.response.data && err.response.data.message) ? err.response.data.message : 'Terjadi kesalahan saat menyetujui reservasi.';
+                            this.snackbar = true;
+                            this.snackbarColor = '#DC2626';
+                            this.snackbarIcon = 'mdi-alert';
+                            this.snackbarMessage = msg;
+                        });
+                },
+                confirmReject(item) {
+                    this.$set(item, 'loadingReject', true);
+                    axios.put('/api/agenda/setreject/' + item.agenda_id)
+                        .then(res => {
+                            this.$set(item, 'loadingReject', false);
+                            if (res.data.status) {
+                                this.snackbar = true;
+                                this.snackbarColor = '#DC2626';
+                                this.snackbarIcon = 'mdi-close-circle';
+                                this.snackbarMessage = "Reservasi '" + item.agenda_nama + "' (" + item.agenda_kode + ") telah ditolak & email notifikasi terkirim.";
+                                this.loadAdminApprovals();
+                                this.getDashboard();
+                                this.getAnalytics();
+                            } else {
+                                this.snackbar = true;
+                                this.snackbarColor = '#DC2626';
+                                this.snackbarIcon = 'mdi-alert';
+                                this.snackbarMessage = res.data.message || 'Gagal menolak reservasi.';
+                            }
+                        })
+                        .catch(err => {
+                            this.$set(item, 'loadingReject', false);
+                            const msg = (err.response && err.response.data && err.response.data.message) ? err.response.data.message : 'Terjadi kesalahan saat menolak reservasi.';
+                            this.snackbar = true;
+                            this.snackbarColor = '#DC2626';
+                            this.snackbarIcon = 'mdi-alert';
+                            this.snackbarMessage = msg;
+                        });
+                },
+                getApprovalBadgeColor(jenis) {
+                    if (jenis === 1) return '#16A34A';
+                    if (jenis === 2) return '#DC2626';
+                    return '#D97706';
+                },
+                getApprovalBadgeIcon(jenis) {
+                    if (jenis === 1) return 'mdi-check-circle';
+                    if (jenis === 2) return 'mdi-close-circle';
+                    return 'mdi-clock-outline';
+                },
+                getApprovalStatusLabel(jenis) {
+                    if (jenis === 1) return 'Disetujui';
+                    if (jenis === 2) return 'Ditolak';
+                    return 'Menunggu Persetujuan';
+                },
+                getHeatmapColor(val, maxVal) {
+                    if (!val || val === 0) return '#FFFFFF';
+                    const ratio = Math.min(1.0, val / Math.max(1, maxVal));
+                    if (ratio < 0.25) return '#E1F5FE';
+                    if (ratio < 0.50) return '#81D4FA';
+                    if (ratio < 0.75) return '#00A2E8';
+                    if (ratio < 0.90) return '#005A9C';
+                    return '#E53935';
+                },
+                getHeatmapTextColor(val, maxVal) {
+                    if (!val || val === 0) return '#718096';
+                    const ratio = Math.min(1.0, val / Math.max(1, maxVal));
+                    return ratio >= 0.5 ? '#FFFFFF' : '#072440';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

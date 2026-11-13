@@ -1,0 +1,155 @@
+/* Token warna & tema (terang/gelap) — PLN NPS TDC (Surface Mode: Operate) */
+:root {
+  /* Typography Stack — Technical Enterprise Operations */
+  --font-ui: 'IBM Plex Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+
+  /* PLN Brand Identity */
+  --pln-blue: #005A9C;
+  --pln-blue-hover: #00467A;
+  --pln-navy: #072440;
+  --pln-cyan: #007A8C;
+  --pln-cyan-text: #006678;
+  --pln-yellow: #FFCC00;
+  --pln-red: #C81E1E;
+
+  /* LIGHT MODE (High-Contrast Neutral Operational Workspace) */
+  --bg-app: #F4F6F9;
+  --bg-sidebar: #072440;
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.09);
+  --bg-sidebar-active: rgba(255, 255, 255, 0.15);
+  --sidebar-text: #F8FAFC;
+  --sidebar-text-muted: #B8D0E8;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+
+  --bg-card: #FFFFFF;
+  --bg-topbar: #FFFFFF;
+  --border-color: #D8E0EA;
+  --border-subtle: #E8EEF5;
+  --text-main: #0F172A;
+  --text-sub: #334155;
+  --text-muted: #475569; /* WCAG AA 6.8:1 on #F4F6F9, 7.5:1 on #FFFFFF */
+  --text-heading: #0F172A;
+
+  --table-head-bg: #EEF2F6;
+  --table-head-text: #334155;
+  --table-row-bg: #FFFFFF;
+  --table-row-hover: #F1F5F9;
+  --table-border: #E2E8F0;
+
+  --input-bg: #FFFFFF;
+  --input-border: #CBD5E1;
+  --input-text: #0F172A;
+
+  --badge-aktif-bg: #ECFDF5;
+  --badge-aktif-text: #065F46;
+  --badge-aktif-border: #A7F3D0;
+  --badge-warn-bg: #FFFBEB;
+  --badge-warn-text: #92400E;
+  --badge-warn-border: #FDE68A;
+  --badge-danger-bg: #FEF2F2;
+  --badge-danger-text: #991B1B;
+  --badge-danger-border: #FECACA;
+  --badge-history-bg: #F1F5F9;
+  --badge-history-text: #334155;
+  --badge-history-border: #CBD5E1;
+
+  --modal-bg: #FFFFFF;
+  --modal-overlay: rgba(15, 23, 42, 0.62);
+  --radius: 8px;
+  --radius-md: 6px;
+  --radius-sm: 4px;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+  --cyan: #007A8C;
+  --cyan-light: #E0F2FE;
+  --teal: #0F172A;
+  --midblue: #005A9C;
+  --gray-m: #475569;
+  --gray-l: #D8E0EA;
+  --bg-subtle: #EEF2F6;
+  --bg-banner: #FFFFFF;
+  --text-banner: #0F172A;
+  --focus-ring: 0 0 0 2px rgba(0, 90, 156, 0.35);
+}
+
+[data-theme="dark"] {
+  /* DARK MODE: Control Room Layered Carbon Surfaces & Deep Navy Sidebar */
+  --pln-blue: #1F7AE0;
+  --pln-blue-hover: #388BFD;
+  --pln-navy: #081426;
+  --pln-cyan: #38BDF8;
+  --pln-cyan-text: #7DD3FC;
+  --pln-yellow: #FFCC00;
+  --pln-red: #EF4444;
+
+  --bg-app: #0D1117;
+  --bg-sidebar: #081426;
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.08);
+  --bg-sidebar-active: rgba(255, 255, 255, 0.14);
+  --sidebar-text: #F8FAFC;
+  --sidebar-text-muted: #94A3B8;
+  --sidebar-border: #1B2D48;
+
+  --bg-card: #151B23;
+  --bg-topbar: #11161D;
+  --border-color: #2A3441;
+  --border-subtle: #1F2937;
+  --text-main: #F0F6FC;
+  --text-sub: #CBD5E1;
+  --text-muted: #94A3B8; /* WCAG AA 5.9:1 on #151B23, 6.6:1 on #0D1117 */
+  --text-heading: #FFFFFF;
+
+  --table-head-bg: #1C2430;
+  --table-head-text: #CBD5E1;
+  --table-row-bg: #151B23;
+  --table-row-hover: #1E2733;
+  --table-border: #252F3D;
+
+  --input-bg: #0F141B;
+  --input-border: #334155;
+  --input-text: #F0F6FC;
+
+  --badge-aktif-bg: rgba(16, 185, 129, 0.15);
+  --badge-aktif-text: #6EE7B7;
+  --badge-aktif-border: rgba(16, 185, 129, 0.35);
+  --badge-warn-bg: rgba(245, 158, 11, 0.15);
+  --badge-warn-text: #FCD34D;
+  --badge-warn-border: rgba(245, 158, 11, 0.35);
+  --badge-danger-bg: rgba(239, 68, 68, 0.16);
+  --badge-danger-text: #FCA5A5;
+  --badge-danger-border: rgba(239, 68, 68, 0.38);
+  --badge-history-bg: rgba(148, 163, 184, 0.14);
+  --badge-history-text: #CBD5E1;
+  --badge-history-border: rgba(148, 163, 184, 0.3);
+
+  --modal-bg: #151B23;
+  --modal-overlay: rgba(3, 7, 18, 0.8);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+
+  --teal: #7DD3FC;
+  --midblue: #38BDF8;
+  --gray-m: #94A3B8;
+  --gray-l: #2A3441;
+  --bg-subtle: #1C2430;
+  --bg-banner: #151B23;
+  --text-banner: #F8FAFC;
+  --focus-ring: 0 0 0 2px rgba(56, 189, 248, 0.45);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.5;
+  background: var(--bg-app);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; }
+code, pre, .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+table, th, td, .num, .num-col, .ac-num, .status, .kpi-pill, .sisa-num, .pager, .donut-center, .bar-head, .count-list b {
+  font-variant-numeric: tabular-nums;
+}

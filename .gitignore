@@ -1,0 +1,56 @@
+# ==============================================================================
+#  PT PLN Nusantara Power Services - Divisi TDC
+#  Git Ignore Rules
+# ==============================================================================
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# Environment Variables & Local Secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Database Runtime, Temporary, & Lock Files
+*.db-wal
+*.db-shm
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Runtime Backups (Folder dijaga dengan .gitkeep)
+backend/writable/backups/*
+!backend/writable/backups/.gitkeep
+
+# Runtime Logs (Folder dijaga dengan .gitkeep)
+backend/writable/logs/*
+!backend/writable/logs/.gitkeep
+*.log
+
+# Runtime File Uploads (Folder dijaga dengan .gitkeep)
+backend/writable/uploads/*
+!backend/writable/uploads/.gitkeep
+
+# Generated Reports & Exports (Folder dijaga dengan .gitkeep)
+frontend/public/exports/*
+!frontend/public/exports/.gitkeep
+
+# Editor, OS, & IDE Metadata
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
